@@ -21,6 +21,9 @@ from django.core import serializers
 from django.views.decorators.csrf import csrf_exempt
 from multiselectfield import MultiSelectField
 from django.core.files.storage import default_storage
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.models import User
+
 # Create your views here.
 def index(request):
     vendedores = []
@@ -63,18 +66,10 @@ def index(request):
                 Usuario.objects.filter(nombre = p.nombre).update(activo=1)
             else:
                 Usuario.objects.filter(nombre=p.nombre).update(activo=0)
-
-
-
-
-
-
-
     vendedoresJson = simplejson.dumps(vendedores)
-
     return render(request, 'main/baseAlumno-sinLogin.html', {"vendedores": vendedoresJson})
 
-def login(request):
+def login_view(request):
     return render(request, 'main/login.html', {})
 
 
@@ -460,7 +455,14 @@ def register(request):
         formasDePago.append(request.POST.get("formaDePago2"))
     if not (request.POST.get("formaDePago3") is None):
         formasDePago.append(request.POST.get("formaDePago3"))
-    usuarioNuevo = Usuario(nombre=nombre,email=email,tipo=tipo,contraseña=password,avatar=avatar,formasDePago=formasDePago,horarioIni=horaInicial,horarioFin=horaFinal)
+
+    duser = User.objects.create_superuser(email,
+                                     email,
+                                     password)
+    authuser = authenticate(username=email, password=password)
+    login(request, authuser)
+
+    usuarioNuevo = Usuario(django_user=duser,   nombre=nombre,email=email,tipo=tipo,contraseña=password,avatar=avatar,formasDePago=formasDePago,horarioIni=horaInicial,horarioFin=horaFinal)
     usuarioNuevo.save()
     return loginReq(request)
 

@@ -2,10 +2,13 @@ from django.db import models
 from multiselectfield import MultiSelectField
 from django.utils import timezone
 from django.utils.formats import get_format
+from django.contrib.auth.models import User
+
 
 # Create your models here
 
 class Usuario(models.Model):
+    django_user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="abstract_user")
     id = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=200)
     email = models.CharField(max_length=200)
