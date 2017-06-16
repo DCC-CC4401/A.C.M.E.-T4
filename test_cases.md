@@ -9,7 +9,7 @@ Los requisitos que se debiesen cumplir, y para los cuales se diseñaron los caso
 
 #### R1. El sistema debe permitir la autentificación de usuarios.
 
-Se supone que el usuario no está loggeado ni autentificado en el sistema.
+Se supone que el usuario no está autentificado en el sistema.
 Si el usuario no está registrado:
 ```
 	1. Entrar a pagina web.
@@ -17,7 +17,7 @@ Si el usuario no está registrado:
 	3. Dirigir a 'Registrate'
 	4. Llenar la información de usuario.
 	5. Enviar formulario (presionar 'registrarse)'
-Se espera que en este punto el usuario esté correctamente registrado, loggeado y autentificado.
+	6. Verificar que el usuario esté correctamente registrado y autentificado.
 Pass!
 ```
 Si el usuario está registrado como administrador, alumno, vendedor ambulante o fijo:
@@ -26,8 +26,9 @@ Si el usuario está registrado como administrador, alumno, vendedor ambulante o 
 	2. Dirigir a 'Iniciar Sesión'.
 	3. Ingresar información de autentificación.
 	4. Enviar formulario (presionar 'iniciar sesión')
-Se espera que en este punto el usuario este correctamente loggeado y autentificado.
-Pass!
+	5. Verificar que el usuario esté correctamente autentificado.
+
+Pass, pero no hay sistema de persistir la sesión autentificada.
 ```
 #### R2. El sistema debe considerar 4 tipos de usuarios: administrador, alumno, vendedor ambulante y vendedor fijo.
 Si el usuario no está registrado, y se desea registrar como alumno, vendedor ambulate o fijo:
@@ -37,14 +38,14 @@ Si el usuario no está registrado, y se desea registrar como alumno, vendedor am
 	3. Dirigir a 'Registrate'
 	4. Llenar la información de usuario. Al elegir tipo de usuario, seleccionar el elegido.
 	5. Enviar formulario (presionar 'registrarse)'
-Se espera que en este punto el usuario esté correctamente registrado, loggeado y autentificado con la cuenta del tipo escojido.
+Se espera que en este punto el usuario esté correctamente registrado y autentificado con la cuenta del tipo escojido.
 Pass!
 ```
 Si el usuario no está registrado, y se desea registrar como administrador:
 ```
 	1. Entrar a pagina especial de registro de admins: signupAdmin/
 	2. Llenar y enviar formulario.
-Se espera que en este punto el usuario esté correctamente registrado, loggeado y autentificado con la cuenta del tipo administrador.
+Se espera que en este punto el usuario esté correctamente registrado y autentificado con la cuenta del tipo administrador.
 Failed...
 ```
 Si el usuario está registrado como algun tipo de cuenta:
@@ -53,7 +54,7 @@ Si el usuario está registrado como algun tipo de cuenta:
 	2. Dirigir a 'Iniciar Sesión'.
 	3. Ingresar información de autentificación.
 	4. Enviar formulario (presionar 'iniciar sesión')
-Se espera que en este punto el usuario este correctamente loggeado y autentificado con la cuenta del tipo escojido.
+Se espera que en este punto el usuario este correctamente  autentificado con la cuenta del tipo escojido.
 Pass para todos excepto Administrador.
 ```
 #### R3. El sistema debe permitir que vendedores ambulantes hagan check-in para aparecer como activos en el sistema.
@@ -115,8 +116,10 @@ Pass!
 Supone que el vendedor fijo existe, y se esta autentificado como alumno.
 ```
 	1. Ingresar a ficha del vendedor (presionando entrada en el mapa).
-	2. Precionar deslizar switch bajo estrella de favorito a la derecha, para registrar favorito.
-Se puede verificar que favorito persiste deslogueando al alumno y revisando.
+	2. Presionar deslizar switch bajo estrella de favorito a la derecha, para registrar favorito.
+	3. Hacer log-out.
+	4. Volver a auntentificar como el mísmo alumno.
+	3. Verificar que favorito persiste
 Pass!
 ```
 ### Ficha de vendedor (vista por un vendedor):
@@ -141,7 +144,8 @@ Supone que el usuario esta autentificado como vendedor ambulante.
 ```
 	1. Mover switch en barra lateral hacia 'Si' para hacer Check-in.
 	2. Mover switch en barra lateral hacia 'No' para hacer Check-out.
-Al elegir cualquiera de las dos opciones, el estado debe reflejarse y persistir en la base de datos. 
+	3. Verificar que, al elegir cualquiera de las dos opciones, el estado se refleja en el estado del vendedor.
+	4. Verificar que persiste elección, luego de hacer log-out y volver a auntetificarse.
 Pass!
 ```
 #### R20. En el caso de los vendedores fijos, el sistema debe permitir gestionar las horas de atención.
@@ -199,27 +203,57 @@ Supone que el vendedor existe, esta autentificado y posee al menos un producto.
 Pass excepto categoría.
 ```
 
-## Nuevos
-TODO:
+## Para esta iteración:
+
+###Interfaz de búsqueda de vendedores:
+#### R5. El sistema debe mostrar un mapa centrado en la posición actual del usuario, sin importar si hay un usuario autentificado.
 ```
-Interfaz de búsqueda de vendedores:
-5. El sistema debe mostrar un mapa centrado en la posición actual del usuario, sin
-importar si hay un usuario autentificado.
-6. El sistema debe mostrar las posiciones de los vendedores activos con stock disponible
-en este mapa, sin importar si hay un usuario autentificado.
-7. Si el usuario se ha autentificado como alumno, el sistema también debe mostrar las
-posiciones de los vendedores favoritos activos del usuario.
-8. Se debe usar iconos distintos para los vendedores favoritos/no favoritos.
-9. Cuando un usuario presiona el icono de un vendedor en el mapa, el sistema debe
-mostrar la ficha de este vendedor.
-10. El sistema debe permitir filtrar los vendedores en el mapa, mostrando solo los
-vendedores que tienen stock disponible de productos que pertenecen a las categorías
-especificadas por el usuario (sin importar si hay un usuario autentificado).
+    1. Ingresar a la pagina web.
+    2. Verificar que se visualiza mapa centrado en la posicion actual.
+```
 
-Interfaces de administración (solo para usuarios de tipo administrador) (?)
-25. El sistema debe permitir la gestión (creación, modificación y eliminación) de productos.
-26. El sistema debe permitir la gestión (creación, modificación y eliminación) de usuarios.
-27. El sistema debe generar estadísticas básicas de las ventas realizadas por vendedor
+#### R6. El sistema debe mostrar las posiciones de los vendedores activos con stock disponible en este mapa, sin importar si hay un usuario autentificado.
+Supone que hay al menos un vendedor activos con stock disponible en el área cercana.
+```
+    1. Ingresar a la pagina web.
+    2. Verificar que se visualiza mapa mostrándose el vendedor activo con stock dispoible.
+```
 
-Hay que agregar los del foro y enunciado.
+#### R7. Si el usuario se ha autentificado como alumno, el sistema también debe mostrar las posiciones de los vendedores favoritos activos del usuario.
+Supone que el alumno está autentificado y posee al menos un vendedor favorito que esta activo en el área cercana.
+```
+    1. Ir al Home.
+    2. Verificar que vendedor favorito se muestra en pantalla.
+```
+
+#### R8. Se debe usar iconos distintos para los vendedores favoritos/no favoritos.
+Supone que el alumno está autentificado y posee al menos un vendedor favorito activo en el área cercana.
+Además, que que existe al menos un vendedor no-favorito activo en el área cercana.
+```
+    1. Ir al Home.
+    2. Verificar que los vendedoros favoritos y no-favoritos se muestran en pantalla con íconos distintos.
+```
+#### R9. Cuando un usuario presiona el icono de un vendedor en el mapa, el sistema debe mostrar la ficha de este vendedor.
+Supone que hay iconos de vendedores en el mapa.
+```
+    1. Ir al Home.
+    2. Verificar que al presionar sobre un icono de vendedor, el sistema muestra la ficha de este vendedor.
+```
+#### R10. El sistema debe permitir filtrar los vendedores en el mapa, mostrando solo los vendedores que tienen stock disponible de productos que pertenecen a las categorías especificadas por el usuario (sin importar si hay un usuario autentificado).
+Supone al menos un vendedor activo en el área cercana con al menos un producto con stock > 1.
+
+```
+    1. Ir al Home.
+    2. Abrir modal de filtros (TODO)
+    3. Elegir al menos una categoría.
+    4. Verificar que todos los vendedores en el mapa poseen stock de productos de las categorías seleccionadas.
+```
+#### R25: Los usuarios de tipo alumno y vendedor ambulante deben poder lanzar una alerta cuando vean a los carabineros. El sistema debe lanzar una advertencia a los vendedores ambulantes que estén en un radio de 15 metros del usuario que lanzo la alerta.
+Supone un usuario autentificado tipo alumno o vendedor ambulante. Además, supone al menos un vendedor ambulante en un radio de 15 metros del usuario.
+```
+    1. Ir a alerta. (TODO)
+    2. Presionar alerta de carabineros.
+    3. Confirmar.
+    4. Verificar que a los vendedores ambulantes en un radio de 15 metros les aparece la advertencia.
+    
 ```
