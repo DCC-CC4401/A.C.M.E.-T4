@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/css/materialize.min.css">
 
@@ -17,65 +17,182 @@
     <!-- Compiled and minified JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/js/materialize.min.js"></script>
     <script src="http://materializecss.com/templates/starter-template/js/init.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.min.js"></script>
 
     <nav class="top-nav">
         <div class="nav-wrapper teal lighten-1">
-            <a href="#" class="brand-logo right"><img style="max-height: 65px!important;  padding: 8px 0!important;" class="circle" src="../static/img/logo.png"></a>
-          <div class="navbar-fixed">
-            <a href="#" data-activates="slide-out"
-               class="left button-collapse btn-floating btn-large waves-effect waves-light"><i
-                    class="material-icons">menu</i></a>
-            <a class="center page-title"></a>
-          </div>
+            <a href="#" class="brand-logo right"><img style="max-height:
+          65px!important;  padding: 8px 0!important;" class="circle"
+                                                      src="../static/img/logo.png"></a>
+            <div class="navbar-fixed">
+                <a href="#" data-activates="slide-out"
+                   class="left button-collapse btn-floating btn-large waves-effect waves-light"><i
+                        class="material-icons">menu</i></a>
+                <a class="center page-title"></a>
+            </div>
             <ul id="slide-out" class="side-nav fixed leftside-navigation ps-container ps-active-y">
                 <li>
                     <div class="userView">
-                    <i class="material-icons right grey-text text-lighten-2" style="position: absolute; bottom: -0.5em; right: 0.5em; padding: 0 0 !important;">settings</i>
-                  <div class="background" style="height:175px;">
-                    <img src="../static/img/background4.png">
-                  </div>
-                  <a href="#!user"><img style="margin-top: 16%;" class="circle" src="../static/img/AvatarPenguin.png"></a>
-                  <a href="#!name"><span style="margin-left: 5%;" class="white-text name">Invitado</span></a>
-                </div>
+                        {% if logged_user.tipo is 1 %}
+                            <a href="{% url 'editarPerfilAlumno' %}">
+                        {% endif %}
+                        {% if logged_user.tipo is 2 or logged_user.tipo is 3 %}
+                            <a href="{% url 'editarVendedor' %}">
+                        {% endif %}
+
+                        <i class="material-icons right grey-text text-lighten-2"
+                           style="position: absolute; bottom: -0.5em; right: 0.5em; padding: 0 0 !important;">settings</i>
+                        </a>
+                        <div class="background" style="height:175px;">
+                            <img src="../static/img/background4.png">
+                        </div>
+                        {% if logged_user.tipo is 1 %}
+                            <!-- pagina perfil de usuario
+                            <a href="#!user"> -->
+
+                        {% endif %}
+                        {% if logged_user.tipo is 2 or logged_user.tipo is 3 %}
+                            <a href="/fichaVendedor/{{ logged_user.id }}">
+                        {% endif %}
+                        {% if logged_auth %}
+                            <!-- avatar -->
+                            <img style="margin-top: 16%;" class="circle" src="../static/media/{{ logged_avatar }}"></a>
+
+                        {% else %}
+                            <img style="margin-top: 16%;" class="circle" src="../static/img/AvatarPenguin.png"></a>
+
+                        {% endif %}
+                        {% if logged_user.tipo is 1 %}
+                            {#                            <a href="#!name">#}
+                        {% endif %}
+                        {% if logged_user.tipo is 2 or  logged_user.tipo is 3 %}
+                            <a href="/fichaVendedor/{{ logged_user.id }}">
+                        {% endif %}
+                        {% if logged_auth %}
+                            <span style="margin-left: 5%;"
+                                  class="white-text name">{{ logged_name }}</span></a>
+
+                        {% else %}
+                            <span style="margin-left: 5%;" class="white-text name">Invitado</span></a>
+
+                        {% endif %}
+                    </div>
                 </li>
-                <li><a href="{% url 'index' %}"><i class="material-icons">home</i>Inicio</a></li>
-                <li><a href="{% url 'login' %}"><i class="material-icons">account_circle</i>Iniciar Sesión</a></li>
-                <!--<li><a href=""><i class="material-icons">exit_to_app</i>Cerrar Sesión</a></li>-->
+
+
+
+
+                {% if logged_auth %}
+                    {% if logged_user.tipo is 1 %}
+                        <li><a href="{% url 'inicioAlumno' %}"><i class="material-icons">home</i>Inicio</a></li>
+                    {% elif logged_user.tipo is 2 %} {#fijo#}
+                        <li><a href="{% url 'index' %}"><i class="material-icons">home</i>Inicio</a></li>
+                        <li><a href="{% url 'estadisticasVendedor' %}"><i
+                                class="material-icons">assessment</i>Datos de ventas</a></li>
+
+                    {% elif logged_user.tipo is 3 %} {#ambulante#}
+                        <li><a href="{% url 'index' %}"><i class="material-icons">home</i>Inicio</a></li>
+                        <li><a href="{% url 'estadisticasVendedor' %}"><i
+                                class="material-icons">assessment</i>Datos de ventas</a></li>
+                        <li>
+                            <div class="divider"></div>
+                        </li>
+
+                        <li><a class="subheader">Activo</a></li>
+                        <li>
+                            <div class="switch" style="margin-left: 80px;">
+                                <label>
+                                    No<input type="checkbox" id="checkbox-estado"><span class="lever"></span>Si
+                                </label>
+                            </div>
+                        </li>
+
+                    {% else %}
+                    {% endif %}
+                    <li><a href="{% url 'logout' %}"><i class="material-icons">exit_to_app</i>Cerrar Sesión</a></li>
+
+                {% else %}
+                    <li>
+                        <div class="divider"></div>
+                    </li>
+                    <li><a href="{% url 'login' %}"><i class="material-icons">account_circle</i>Iniciar Sesión</a></li>
+
+                {% endif %}
+
+                {% comment %}
+                {% if logged_walking_seller %}
+                    <li><a href="{% url 'checkin' %}"><i class="material-icons">check circle</i>Haz Check-in!</a></li>
+                {% endif %}{% endcomment %}
+
+
                 <!--<li><div class="divider"></div></li>
                 <li><a class="subheader">Activo</a></li>
                 <li>
-                    <div class="switch" style="margin-left: 80px;">
-                        <label>
-                            No<input type="checkbox"><span class="lever"></span>Si
-                        </label>
-                    </div>
-                </li>
+                  <div class="switch" style="margin-left: 80px;">
+                    <label>
+                      No<input type="checkbox"><span class="lever"></span>Si
+                    </label>
+                  </div>                </li>
                 <li><a class="subheader">Filtros</a></li>
                 <li>
-                    <div class="switch" style="margin-left: 10px;">
-                        <label>
-                            <input type="checkbox"><span class="lever"></span>Sólo mostrar favoritos
-                        </label>
-                    </div>
+                  <div class="switch" style="margin-left: 10px;">
+                    <label>
+                      <input type="checkbox"><span class="lever"></span>Sólo mostrar favoritos
+                    </label>
+                  </div>
                 </li>
                 <li>
-                    <div class="switch" style="margin-left: 10px;">
-                        <label>
-                            <input type="checkbox"><span class="lever"></span>Snacks
-                        </label>
-                    </div>
+                  <div class="switch" style="margin-left: 10px;">
+                    <label>
+                      <input type="checkbox"><span class="lever"></span>Snacks
+                    </label>
+                  </div>
                 </li>
                 <li>
-                    <div class="switch" style="margin-left: 10px;">
-                        <label>
-                            <input type="checkbox"><span class="lever"></span>Almuerzos
-                        </label>
-                    </div>
+                  <div class="switch" style="margin-left: 10px;">
+                    <label>
+                      <input type="checkbox"><span class="lever"></span>Almuerzos
+                    </label>
+                  </div>
                 </li>-->
             </ul>
         </div>
     </nav>
+<script>
+    function handleChange(checkbox) {
+        console.log("minimal handlechange")
+    if(checkbox.checked == true){
+         var datos ="id=" + "{{id}}"+"&estado=true";
+         $.ajax({
+           url:{% url 'cambiarEstado' %},
+           type: "GET",
+           data: datos,
+           dataType: "json",
 
+           success: function(data) {
+           },
+           error:function(data) {
+               alert("error in getting from server")
+           },
+        });
+    }else{
+        var datos ="id=" + "{{id}}"+"&estado=false";
+
+         $.ajax({
+           url:{% url 'cambiarEstado' %},
+           type: "GET",
+           data: datos,
+           dataType: "json",
+
+           success: function(data) {
+           },
+           error:function(data) {
+               alert("error in getting from server")
+           },
+        });
+   }
+}
+</script>
 </head>
 
 <body>
@@ -84,5 +201,33 @@
 {% endblock %}
 
 </body>
+<script>
+    function EstadoActual() {
+        var estdoInicial = "{{ logged_seller_isActive }}";
+        if (estdoInicial == "True") {
+            document.getElementById("checkbox-estado").checked = true;
+        } else {
+            document.getElementById("checkbox-estado").checked = false;
+        }
+    }
+</script>
 
+<script>
+    function switchActivo(){
+        var input = document.getElementById("checkbox-estado");
+        input.setAttribute("onChange" ,'handleChange(this);');
+        if ("{{logged_seller_isActive}}" == "True") {
+            input.setAttribute("checked", true);
+        } else {
+            input.setAttribute("checked", false);
+        }
+    }
+</script>
+
+
+
+ <script>
+    window.onload = EstadoActual();
+    window.onload = switchActivo();
+</script>
 </html>
