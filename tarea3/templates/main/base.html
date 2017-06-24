@@ -85,6 +85,7 @@
                 {% if logged_auth %}
                     {% if logged_user.tipo is 1 %}
                         <li><a href="{% url 'inicioAlumno' %}"><i class="material-icons">home</i>Inicio</a></li>
+                        <li><a href="{% url 'inicioAlumno' %}"><i class="material-icons">add_alert</i>Alerta policial</a></li>
                     {% elif logged_user.tipo is 2 %} {#fijo#}
                         <li><a href="{% url 'fichaVendedor' logged_user.id %}"><i class="material-icons">home</i>Inicio</a></li>
                         <li><a href="{% url 'estadisticasVendedor' %}"><i
@@ -106,6 +107,7 @@
                                 </label>
                             </div>
                         </li>
+                        <li><a href="{% url 'fichaVendedor' logged_user.id %}"><i class="material-icons">add_alert</i>Alerta policial</a></li>
 
                     {% else %}
                     {% endif %}
