@@ -70,6 +70,10 @@ def index(request):
             else:
                 Usuario.objects.filter(nombre=p.nombre).update(activo=0)
     vendedoresJson = simplejson.dumps(vendedores)
+    if request.user.is_authenticated():
+        users = Usuario.objects.filter(django_user=request.user)
+        if users[0].tipo == 2 or users[0].tipo == 3:
+            return fichaVendedor(request,users[0].id)
     return render(request, 'main/index.html', {"vendedores": vendedoresJson})
 
 def estadisticasVendedor(request):
