@@ -85,7 +85,7 @@
                 {% if logged_auth %}
                     {% if logged_user.tipo is 1 %}
                         <li><a href="{% url 'inicioAlumno' %}"><i class="material-icons">home</i>Inicio</a></li>
-                        <li><a href="#" onmousedown=Alert()><i class="material-icons">add_alert</i>Alerta policial</a></li>
+                        <li><a href="{% url 'alerta' %}"><i class="material-icons">add_alert</i>Alerta policial</a></li>
                     {% elif logged_user.tipo is 2 %} {#fijo#}
                         <li><a href="{% url 'fichaVendedor' logged_user.id %}"><i class="material-icons">home</i>Inicio</a></li>
                         <li><a href="{% url 'estadisticasVendedor' %}"><i
@@ -107,7 +107,7 @@
                                 </label>
                             </div>
                         </li>
-                        <li><a href="{% url 'fichaVendedor' logged_user.id %}"><i class="material-icons">add_alert</i>Alerta policial</a></li>
+                        <li><a href="{% url 'alerta' %}"><i class="material-icons">add_alert</i>Alerta policial</a></li>
 
                     {% else %}
                     {% endif %}
@@ -158,6 +158,7 @@
    }
 }
 </script>
+
 </head>
 
 <body>
@@ -190,12 +191,30 @@
 </script>
 
 <script>
-    function Alert() {
-        for(seller in "{{ logged_user.id }}") {
-            console.log(seller)
-            alert('Carabineros cerca! CUIDADO')
-        }
-    }
+var myVar = setInterval(function(){ Alert() }, 3000);
+
+function Alert() {
+  var alerta = "{{ logged_user.alert }}"
+  console.log(alerta)
+  if(alerta == "True") {
+      console.log("entre")
+      alert('Carabineros cerca! CUIDADO')
+      var datos ="id=" + "{{id}}"+"&alert=false";
+      $.ajax({
+        url:{% url 'cambiarAlert' %},
+        type: "GET",
+        data: datos,
+        dataType: "json",
+
+        success: function(data) {
+        },
+        error:function(data) {
+          alert("error in getting from server")
+        },
+      });
+  }
+}
+
 </script>
 
 

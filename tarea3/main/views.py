@@ -28,12 +28,26 @@ from django.contrib.auth.models import User
 
 # Create your views here.
 def index(request):
+    vendedoresJson,vendedoresAmb = sellerList(request)
+    if request.user.is_authenticated():
+        users = Usuario.objects.filter(django_user=request.user)
+        if users[0].tipo == 2 or users[0].tipo == 3:
+            return fichaVendedor(request,users[0].id)
+    return render(request, 'main/index.html', {"vendedores": vendedoresJson, "ambulantes": vendedoresAmb})
+
+def sellerList(request):
     vendedores = []
+    vendAmb = []
+    if request.user.is_authenticated():
+        users = Usuario.objects.filter(django_user=request.user)
     # lista de vendedores
     for p in Usuario.objects.raw('SELECT * FROM usuario'):
         if p.tipo == 2 or p.tipo == 3:
+            if request.user.is_authenticated() and p.tipo == 3 and p != users[0]:
+                vendAmb.append(p.id)
             vendedores.append(p.id)
     vendedoresJson = simplejson.dumps(vendedores)
+    vendedoresAmb = simplejson.dumps(vendAmb)
     # actualizar vendedores fijos
     for p in Usuario.objects.raw('SELECT * FROM usuario'):
         if p.tipo == 2:
@@ -69,11 +83,7 @@ def index(request):
             else:
                 Usuario.objects.filter(nombre=p.nombre).update(activo=0)
     vendedoresJson = simplejson.dumps(vendedores)
-    if request.user.is_authenticated():
-        users = Usuario.objects.filter(django_user=request.user)
-        if users[0].tipo == 2 or users[0].tipo == 3:
-            return fichaVendedor(request,users[0].id)
-    return render(request, 'main/index.html', {"vendedores": vendedoresJson})
+    return vendedoresJson,vendAmb
 
 def estadisticasVendedor(request):
     if request.user.is_authenticated():
@@ -312,6 +322,7 @@ def fichaVendedor(request, pkid):
 
     # Puede ser vista por alumno, vendedor dueño o otro (no autentificado o otro vendedor)
     if request.user.is_authenticated:
+        vendedoresJson, vendedoresAmb = sellerList(request)
         usuario = Usuario.objects.get(django_user=request.user)
         if str(usuario.id) == str(pkid):  # es el dueño de la ficha,
             if usuario.tipo is 2:  # vendedor fijo
@@ -332,7 +343,7 @@ def fichaVendedor(request, pkid):
                               "avatar": usuario.avatar,
                               "favoritos": obtenerFavoritos(usuario.id), "listaDeProductos": listaDeProductos,
                               "activo": usuario.activo,
-                              "formasDePago": usuario.formasDePago}
+                              "formasDePago": usuario.formasDePago, "ambulantes": vendedoresAmb}
                 return render(request, 'main/vendedor-ambulante.html', argumentos)
 
 
@@ -359,7 +370,7 @@ def fichaVendedor(request, pkid):
                            "avatarSesion": usuario.avatar,
                            "favorito": favorito, "formasDePago": vendedor.formasDePago,
                            "horarioIni": vendedor.horarioIni,
-                           "horarioFin": vendedor.horarioFin, })
+                           "horarioFin": vendedor.horarioFin, "vendedores":vendedoresJson, "ambulantes":vendedoresAmb})
 
         # vista de no registrado o otro vendedor
         print("auth as no alumno")
@@ -865,6 +876,30 @@ def cambiarEstado(request):
             data = {"estado": estado}
             return JsonResponse(data)
 
+def cambiarEstado(request):
+    if request.user.is_authenticated:
+        vendedor = Usuario.objects.get(django_user=request.user)
+        if vendedor.tipo is not 3:  # si el usuario autenntificado no es vendedor ambulante, adios
+            return redirect('index')
+    if request.method == 'GET':
+        if request.is_ajax():
+            alert = request.GET.get('alert')
+            id_vendedor = vendedor.id
+            if alert == 'false':
+                Usuario.objects.filter(id=id_vendedor).update(alert=False)
+            data = {"alert": alert}
+            return JsonResponse(data)
+
+def alerta(request):
+    fijo, amb = sellerList(request)
+    for i in range(len(amb)):
+        user = Usuario.objects.filter(id=amb[i])
+        print(user[0].alert)
+        user.update(alert=True)
+        print(user[0].alert)
+        print("lanzando alerta a " + user[0].nombre)
+    return redirect('index')
+    #return HttpResponse("Alerta lanzada")
 
 def editarPerfilAlumno(request):
     if request.user.is_authenticated:

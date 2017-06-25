@@ -26,6 +26,10 @@ class Usuario(models.Model):
     formasDePago = MultiSelectField(choices=litaFormasDePago,null=True,blank=True)
     horarioIni = models.CharField(max_length=200,blank=True,null=True)
     horarioFin = models.CharField(max_length=200,blank=True,null=True)
+    alert = models.BooleanField(default=False,blank=True)
+
+    def setAlert(self,bool):
+        self.alert = bool
 
     def __str__(self):
         return self.nombre
