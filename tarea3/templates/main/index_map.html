@@ -28,10 +28,9 @@
 
       function initMap() {
         var map = new google.maps.Map(document.getElementById('map'), {
-          center: {lat: -33.4579141, lng: -70.6646977},
-          zoom: 15
+          center: {lat: -33.457734, lng: -70.6638545},
+          zoom: 19
         });
-        var infoWindow = new google.maps.InfoWindow({map: map});
 
         // Try HTML5 geolocation.
         if (navigator.geolocation) {
@@ -41,8 +40,9 @@
               lng: position.coords.longitude
             };
 
+            var infoWindow = new google.maps.InfoWindow({map: map});
             infoWindow.setPosition(pos);
-            infoWindow.setContent('Location found.');
+            infoWindow.setContent('Tu ubicación');
             map.setCenter(pos);
           }, function() {
             handleLocationError(true, infoWindow, map.getCenter());
