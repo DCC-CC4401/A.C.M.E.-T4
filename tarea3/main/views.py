@@ -1150,3 +1150,6 @@ def createTransaction(request):
     transaccionNueva = Transacciones(idVendedor=idVendedor, precio=precio, nombreComida=nombreProducto)
     transaccionNueva.save()
     return JsonResponse({"transaccion": "realizada"})
+
+def map(request):
+    return render(request, 'main/index_map.html', {})
