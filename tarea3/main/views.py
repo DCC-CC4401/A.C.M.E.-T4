@@ -26,7 +26,6 @@ from django.core.files.storage import default_storage
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.models import User
 
-
 # Create your views here.
 def index(request):
     vendedores = []

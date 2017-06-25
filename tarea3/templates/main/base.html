@@ -85,7 +85,7 @@
                 {% if logged_auth %}
                     {% if logged_user.tipo is 1 %}
                         <li><a href="{% url 'inicioAlumno' %}"><i class="material-icons">home</i>Inicio</a></li>
-                        <li><a href="{% url 'inicioAlumno' %}"><i class="material-icons">add_alert</i>Alerta policial</a></li>
+                        <li><a href="#" onmousedown=Alert()><i class="material-icons">add_alert</i>Alerta policial</a></li>
                     {% elif logged_user.tipo is 2 %} {#fijo#}
                         <li><a href="{% url 'fichaVendedor' logged_user.id %}"><i class="material-icons">home</i>Inicio</a></li>
                         <li><a href="{% url 'estadisticasVendedor' %}"><i
@@ -120,43 +120,6 @@
                     <li><a href="{% url 'login' %}"><i class="material-icons">account_circle</i>Iniciar Sesión</a></li>
 
                 {% endif %}
-
-                {% comment %}
-                {% if logged_walking_seller %}
-                    <li><a href="{% url 'checkin' %}"><i class="material-icons">check circle</i>Haz Check-in!</a></li>
-                {% endif %}{% endcomment %}
-
-
-                <!--<li><div class="divider"></div></li>
-                <li><a class="subheader">Activo</a></li>
-                <li>
-                  <div class="switch" style="margin-left: 80px;">
-                    <label>
-                      No<input type="checkbox"><span class="lever"></span>Si
-                    </label>
-                  </div>                </li>
-                <li><a class="subheader">Filtros</a></li>
-                <li>
-                  <div class="switch" style="margin-left: 10px;">
-                    <label>
-                      <input type="checkbox"><span class="lever"></span>Sólo mostrar favoritos
-                    </label>
-                  </div>
-                </li>
-                <li>
-                  <div class="switch" style="margin-left: 10px;">
-                    <label>
-                      <input type="checkbox"><span class="lever"></span>Snacks
-                    </label>
-                  </div>
-                </li>
-                <li>
-                  <div class="switch" style="margin-left: 10px;">
-                    <label>
-                      <input type="checkbox"><span class="lever"></span>Almuerzos
-                    </label>
-                  </div>
-                </li>-->
             </ul>
         </div>
     </nav>
@@ -226,6 +189,14 @@
     }
 </script>
 
+<script>
+    function Alert() {
+        for(seller in "{{ logged_user.id }}") {
+            console.log(seller)
+            alert('Carabineros cerca! CUIDADO')
+        }
+    }
+</script>
 
 
  <script>

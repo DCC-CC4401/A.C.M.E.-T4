@@ -35,5 +35,4 @@ urlpatterns = [
     url(r'^createTransaction/$', views.createTransaction, name='createTransaction'),
     url(r'^estadisticasVendedor/$', views.estadisticasVendedor, name='estadisticasVendedor'),
     url(r'^fichaVendedor/(\d*)$', views.fichaVendedor, name='fichaVendedor'),
-
 ]
