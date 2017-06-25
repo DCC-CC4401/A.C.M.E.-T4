@@ -1152,4 +1152,4 @@ def createTransaction(request):
     return JsonResponse({"transaccion": "realizada"})
 
 def map(request):
-    return render(request, 'main/index_map.html', {})
+    return render(request, 'main/index2.html', {})

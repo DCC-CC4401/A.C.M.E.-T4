@@ -1,20 +1,8 @@
 {% extends 'main/base.html' %}
 {% block content %}
-    <style>
-      /* Always set the map height explicitly to define the size of the div
-       * element that contains the map. */
-      #map {
-        height: 96%;
-      }
-      /* Optional: Makes the sample page fill the window. */
-      html, body {
-        height: 96%;
-        margin: 0;
-        padding: 0;
-      }
-    </style>
-    <div id="map">
-      <script>
+	<div id="map"></div>
+
+    <script>
       // Note: This example requires that you consent to location sharing when
       // prompted by your browser. If you see the error "The Geolocation service
       // failed.", it means you probably did not give permission for the browser to
@@ -53,11 +41,8 @@
                               'Error: The Geolocation service failed.' :
                               'Error: Your browser doesn\'t support geolocation.');
       }
-      </script>
-      <script async defer
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA697hvbSldh-Mmd5p8mE4TPFXTHcmpji4&callback=initMap">
-      </script>
-    </div>
-
-    
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA697hvbSldh-Mmd5p8mE4TPFXTHcmpji4&callback=initMap">
+    </script>
 {% endblock %}
