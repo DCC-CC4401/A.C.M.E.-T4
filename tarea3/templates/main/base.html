@@ -163,9 +163,9 @@
 
 <body>
 
+<div id="refresh"></div>
 {% block content %}
 {% endblock %}
-
 </body>
 <script>
     function EstadoActual() {
@@ -191,11 +191,14 @@
 </script>
 
 <script>
-var myVar = setInterval(function(){ Alert() }, 3000);
+var myVar = setInterval(function(){ Alert() }, 1000);
 
 function Alert() {
   var alerta = "{{ logged_user.alert }}"
-  console.log(alerta)
+  var user = {{ logged_user.tipo }}
+  if(user == 3){
+      window.location.reload(false)
+  }
   if(alerta == "True") {
       console.log("entre")
       alert('Carabineros cerca! CUIDADO')
@@ -212,14 +215,15 @@ function Alert() {
           alert("error in getting from server")
         },
       });
+      window.location.reload();
   }
 }
 
 </script>
 
 
- <script>
-    window.onload = EstadoActual();
-    window.onload = switchActivo();
+<script>
+   window.onload = EstadoActual();
+   window.onload = switchActivo();
 </script>
 </html>

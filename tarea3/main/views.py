@@ -876,17 +876,23 @@ def cambiarEstado(request):
             data = {"estado": estado}
             return JsonResponse(data)
 
-def cambiarEstado(request):
+def cambiarAlert(request):
     if request.user.is_authenticated:
         vendedor = Usuario.objects.get(django_user=request.user)
         if vendedor.tipo is not 3:  # si el usuario autenntificado no es vendedor ambulante, adios
             return redirect('index')
+    fijo, amb = sellerList(request)
     if request.method == 'GET':
         if request.is_ajax():
             alert = request.GET.get('alert')
-            id_vendedor = vendedor.id
-            if alert == 'false':
+            if(alert == "false"):
+                for i in range(len(amb)):
+                    user = Usuario.objects.filter(id=amb[i])
+                    user.update(alert=False)
+                    print("sacando alerta a " + user[0].nombre)
+                id_vendedor = vendedor.id
                 Usuario.objects.filter(id=id_vendedor).update(alert=False)
+                print("sacando alerta a " + vendedor.nombre)
             data = {"alert": alert}
             return JsonResponse(data)
 
@@ -894,9 +900,7 @@ def alerta(request):
     fijo, amb = sellerList(request)
     for i in range(len(amb)):
         user = Usuario.objects.filter(id=amb[i])
-        print(user[0].alert)
         user.update(alert=True)
-        print(user[0].alert)
         print("lanzando alerta a " + user[0].nombre)
     return redirect('index')
     #return HttpResponse("Alerta lanzada")
