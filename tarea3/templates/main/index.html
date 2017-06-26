@@ -25,15 +25,6 @@
         // Try HTML5 geolocation.
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(function(position) {
-            var pos = {
-              lat: position.coords.latitude,
-              lng: position.coords.longitude
-            };
-
-            var infoWindow = new google.maps.InfoWindow({map: map});
-            infoWindow.setPosition(pos);
-            infoWindow.setContent('Tu ubicación');
-            map.setCenter(pos);
 
             var l = "{{ lugares }}";
 
@@ -47,7 +38,6 @@
 
             for (var i = 0; i < arrayLength; i++) {
                 var pos2 = lugares[i];
-                alert(vende[i])
 
                 var myLatLng = {lat: pos2[0], lng: pos2[1]};
                 var marker = new google.maps.Marker({
@@ -56,6 +46,27 @@
                     title: vende[i].toString()
                 });
             }
+
+            var pos = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            };
+
+              var image = {
+                url: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Rebel_Alliance_logo.svg/220px-Rebel_Alliance_logo.svg.png",
+                // This marker is 20 pixels wide by 32 pixels high.
+                scaledSize: new google.maps.Size(50, 50),
+              };
+
+
+            var marker = new google.maps.Marker({
+                position: pos,
+                map: map,
+                title: "Tu ubicación",
+                icon: image,
+            });
+
+            map.setCenter(pos);
 
           }, function() {
             handleLocationError(true, infoWindow, map.getCenter());
