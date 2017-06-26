@@ -36,6 +36,65 @@ def index(request):
                 return fichaVendedor(request,users[0].id)
     return render(request, 'main/index.html', {"vendedores": vendedoresJson})
 
+def tiempo(p):
+    hi = p.horarioIni
+    hf = p.horarioFin
+    horai = hi[:2]
+    horaf = hf[:2]
+    mini = hi[3:5]
+    minf = hf[3:5]
+    print(datetime.datetime.now().time())
+    tiempo = str(datetime.datetime.now().time())
+    hora = tiempo[:2]
+    minutos = tiempo[3:5]
+    estado = ""
+    if horaf >= horai: # caso 12 - 16
+        #if horaf == horai and minf >= mini: # 12.30 - 12.40
+        if horaf >= hora and hora >= horai:
+            if horai == hora:
+                if minf >= minutos and minutos >= mini:
+                    estado = "activo"
+                else:
+                    estado = "inactivo"
+            elif horaf == hora:
+                if minf >= minutos and minutos >= mini:
+                    estado = "activo"
+                else:
+                    estado = "inactivo"
+            else:
+                 estado = "activo"
+        else:
+            estado = "inactivo"
+    else: # caso 23:00 - 5:00
+        if hora <= '23' and horaf <= hora:
+            if horaf <= hora and hora <= horai:
+                if horai == hora:
+                    if minf >= minutos and minutos >= mini:
+                        estado = "activo"
+                    else:
+                        estado = "inactivo"
+                elif horaf == hora:
+                    if minf >= minutos and minutos >= mini:
+                        estado = "activo"
+                    else:
+                        estado = "inactivo"
+                else:
+                    estado = "activo"
+            else:
+                estado = "inactivo"
+        else:
+            if '00' <= hora and hora <= horai:
+                if horai == hora:
+                    if minutos >= mini:
+                        estado = "activo"
+                    else:
+                        estado = "inactivo"
+                else:
+                    estado = "activo"
+            else:
+                estado = "inactivo"
+    return estado
+
 def sellerList(request,int):
     vendedores = []
     vendAmb = []
@@ -53,33 +112,34 @@ def sellerList(request,int):
     # actualizar vendedores fijos
     for p in Usuario.objects.raw('SELECT * FROM usuario'):
         if p.tipo == 2:
-            hi = p.horarioIni
-            hf = p.horarioFin
-            horai = hi[:2]
-            horaf = hf[:2]
-            mini = hi[3:5]
-            minf = hf[3:5]
-            print(datetime.datetime.now().time())
-            tiempo = str(datetime.datetime.now().time())
-            print(tiempo)
-            hora = tiempo[:2]
-            minutos = tiempo[3:5]
-            estado = ""
-            if horaf >= hora and hora >= horai:
-                if horai == hora:
-                    if minf >= minutos and minutos >= mini:
-                        estado = "activo"
-                    else:
-                        estado = "inactivo"
-                elif horaf == hora:
-                    if minf >= minutos and minutos >= mini:
-                        estado = "activo"
-                    else:
-                        estado = "inactivo"
-                else:
-                    estado = "activo"
-            else:
-                estado = "inactivo"
+            estado = tiempo(p)
+            # hi = p.horarioIni
+            # hf = p.horarioFin
+            # horai = hi[:2]
+            # horaf = hf[:2]
+            # mini = hi[3:5]
+            # minf = hf[3:5]
+            # print(datetime.datetime.now().time())
+            # tiempo = str(datetime.datetime.now().time())
+            # print(tiempo)
+            # hora = tiempo[:2]
+            # minutos = tiempo[3:5]
+            # estado = ""
+            # if horaf >= hora and hora >= horai:
+            #     if horai == hora:
+            #         if minf >= minutos and minutos >= mini:
+            #             estado = "activo"
+            #         else:
+            #             estado = "inactivo"
+            #     elif horaf == hora:
+            #         if minf >= minutos and minutos >= mini:
+            #             estado = "activo"
+            #         else:
+            #             estado = "inactivo"
+            #     else:
+            #         estado = "activo"
+            # else:
+            #     estado = "inactivo"
             if estado == "activo":
                 Usuario.objects.filter(nombre=p.nombre).update(activo=1)
             else:
@@ -137,7 +197,6 @@ def estadisticasVendedor(request):
                 productosPrecioArr.append(aux)
             productosArr = simplejson.dumps(productosArr)
             productosPrecioArr = simplejson.dumps(productosPrecioArr)
-            print(productosPrecioArr)
 
             # productos vendidos hoy con su cantidad respectiva
             fechaHoy = str(timezone.now()).split(' ', 1)[0]
@@ -202,7 +261,6 @@ def estadisticasVendedor(request):
                 productosPrecioArr.append(aux)
             productosArr = simplejson.dumps(productosArr)
             productosPrecioArr = simplejson.dumps(productosPrecioArr)
-            print(productosPrecioArr)
 
             # productos vendidos hoy con su cantidad respectiva
             fechaHoy = str(timezone.now()).split(' ', 1)[0]
@@ -227,17 +285,11 @@ def estadisticasVendedor(request):
 
 
 def adminEdit(request):
-    print(request.POST)
     nombre = request.POST.get("adminName")
-    print(nombre)
     contraseña = request.POST.get("adminPassword")
-    print(contraseña)
     id = request.POST.get("adminId")
-    print(id)
     email = request.POST.get("adminEmail")
-    print(email)
     avatar = request.POST.get("adminAvatar")
-    print(avatar)
     return render(request, 'main/adminEdit.html',
                   {"nombre": nombre, "contraseña": contraseña, "id": id, "email": email, "avatar": avatar})
 
@@ -255,8 +307,6 @@ def loggedin(request):
 
 
 def loginAdmin(request):
-    print("POST: ")
-    print(request.POST)
     id = request.POST.get("userID")
     email = request.POST.get("email")
     avatar = "avatars/" + request.POST.get("fileName")
@@ -342,8 +392,6 @@ def fichaVendedor(request, pkid):
                 return render(request, 'main/vendedor-fijo.html', argumentos)
 
             elif usuario.tipo is 3:  # vendedor ambulante
-                print("auth as vendedor ambulante y dueño")
-
                 argumentos = {"nombre": usuario.nombre, "tipo": usuario.tipo, "id": usuario.id,
                               "avatar": usuario.avatar,
                               "favoritos": obtenerFavoritos(usuario.id), "listaDeProductos": listaDeProductos,
@@ -353,7 +401,6 @@ def fichaVendedor(request, pkid):
 
 
         if usuario.tipo is 1:  # vista de alumno
-            print("auth as alumno")
             vendedor = Usuario.objects.get(id=pkid)
             try:
                 fav = Favoritos.objects.get(idAlumno=usuario.id, idVendedor=vendedor.id)
@@ -363,7 +410,6 @@ def fichaVendedor(request, pkid):
                 favorito = 1
             except ObjectDoesNotExist:
                 favorito = 0
-            print('favorito ' + str(favorito))
             if vendedor.tipo is 2:
                 url = 'main/vendedor-fijo-vistaAlumno.html'
             else:
@@ -379,8 +425,6 @@ def fichaVendedor(request, pkid):
 
     else:
         # vista de no registrado o otro vendedor
-        print("auth as no alumno")
-
         vendedor = Usuario.objects.get(id=pkid)
         if vendedor.tipo is 2:
             url = 'main/vendedor-fijo-vistaAlumno-sinLogin.html'
@@ -566,7 +610,6 @@ def register(request):
     horaInicial = request.POST.get("horaIni")
     horaFinal = request.POST.get("horaFin")
     avatar = request.FILES.get("avatar")
-    print(avatar)
     formasDePago = []
     if not (request.POST.get("formaDePago0") is None):
         formasDePago.append(request.POST.get("formaDePago0"))
@@ -627,7 +670,6 @@ def editarVendedor(request):
     if request.user.is_authenticated:
         vendedor = Usuario.objects.get(django_user=request.user)
         if vendedor.tipo < 2 or vendedor.tipo > 3:  # si el usuario autenntificado no es alumno, adios
-            print(str(vendedor.tipo))
             return redirect('index')
 
     id = vendedor.id
@@ -662,7 +704,6 @@ def editarDatos(request):
     if (tipo == "2"):
         horaInicial = request.POST.get("horaIni")
         horaFinal = request.POST.get("horaFin")
-        print(tipo, horaInicial, horaFinal)
         if (not (horaInicial is None)):
             usuario.update(horarioIni=horaInicial)
         if (not (horaFinal is None)):
@@ -670,33 +711,35 @@ def editarDatos(request):
             # actualizar vendedores fijos
         for p in Usuario.objects.raw('SELECT * FROM usuario'):
             if p.tipo == 2:
-                hi = p.horarioIni
-                hf = p.horarioFin
-                horai = hi[:2]
-                horaf = hf[:2]
-                mini = hi[3:5]
-                minf = hf[3:5]
-                print(datetime.datetime.now().time())
-                tiempo = str(datetime.datetime.now().time())
-                print(tiempo)
-                hora = tiempo[:2]
-                minutos = tiempo[3:5]
-                estado = ""
-                if horaf >= hora and hora >= horai:
-                    if horai == hora:
-                        if minf >= minutos and minutos >= mini:
-                            estado = "activo"
-                        else:
-                            estado = "inactivo"
-                    elif horaf == hora:
-                        if minf >= minutos and minutos >= mini:
-                            estado = "activo"
-                        else:
-                            estado = "inactivo"
-                    else:
-                        estado = "activo"
-                else:
-                    estado = "inactivo"
+                # hi = p.horarioIni
+                # hf = p.horarioFin
+                # horai = hi[:2]
+                # horaf = hf[:2]
+                # mini = hi[3:5]
+                # minf = hf[3:5]
+                # print(datetime.datetime.now().time())
+                # tiempo = str(datetime.datetime.now().time())
+                # print(tiempo)
+                # hora = tiempo[:2]
+                # minutos = tiempo[3:5]
+                # estado = ""
+                # if horaf >= hora and hora >= horai:
+                #     if horai == hora:
+                #         if minf >= minutos and minutos >= mini:
+                #             estado = "activo"
+                #         else:
+                #             estado = "inactivo"
+                #     elif horaf == hora:
+                #         if minf >= minutos and minutos >= mini:
+                #             estado = "activo"
+                #         else:
+                #             estado = "inactivo"
+                #     else:
+                #         estado = "activo"
+                # else:
+                #     estado = "inactivo"
+                estado = tiempo(p)
+                print(estado)
                 if estado == "activo":
                     Usuario.objects.filter(nombre=p.nombre).update(activo=1)
                 else:
@@ -721,8 +764,6 @@ def editarDatos(request):
             for chunk in avatar.chunks():
                 destination.write(chunk)
         usuario.update(avatar='/avatars/' + str(avatar))
-
-    print(id_vendedor)
     return redirigirEditar(id_vendedor, request)
 
 
@@ -776,7 +817,6 @@ def redirigirEditar(id_vendedor, request):
             argumentos = {"nombre": nombre, "tipo": tipo, "id": id, "avatar": avatar,
                           "listaDeProductos": listaDeProductos,
                           "activo": activo, "formasDePago": formasDePago, "favoritos": favoritos}
-        print("chao")
         return render(request, url, argumentos)
 
 
@@ -806,8 +846,6 @@ def editarProducto(request):
     if request.method == 'POST':
         if request.is_ajax():
             form = editarProductosForm(data=request.POST, files=request.FILES)
-            print(request.POST)
-            print(request.FILES)
             nombreOriginal = request.POST.get("nombreOriginal")
             nuevoNombre = request.POST.get('nombre')
             nuevoPrecio = (request.POST.get('precio'))
@@ -984,9 +1022,6 @@ def procesarPerfilAlumno(request):
             fav = request.POST.get("switch" + str(i))
             if fav != "":
                 aEliminar.append(fav)
-        print(request.POST)
-        print(request.FILES)
-        print(aEliminar)
 
         if nuevoNombre != "":
             if Usuario.objects.filter(nombre=nuevoNombre).exists():
@@ -1023,7 +1058,6 @@ def borrarUsuario(request):
 def agregarAvatar(request):
     if request.is_ajax() or request.method == 'FILES':
         imagen = request.FILES.get("image")
-        print(request.FILES)
         nuevaImagen = Imagen(imagen=imagen)
         nuevaImagen.save()
         return HttpResponse("Success")
@@ -1179,10 +1213,6 @@ def registerAdmin(request):
     avatar = request.session['avatar']
     nombre = request.session['nombre']
     contraseña = request.session['contraseña']
-    print(id)
-    print(email)
-    print(avatar)
-    print(nombre)
     return adminPOST(id, avatar, email, nombre, contraseña, request)
 
 
@@ -1190,7 +1220,6 @@ def registerAdmin(request):
 def verificarEmail(request):
     if request.is_ajax() or request.method == 'POST':
         email = request.POST.get("email")
-        print(email)
         if Usuario.objects.filter(email=email).exists():
             data = {"respuesta": "repetido"}
             return JsonResponse(data)
@@ -1217,8 +1246,6 @@ def getStock(request):
 
 
 def createTransaction(request):
-    print("GET:")
-    print(request.GET)
     nombreProducto = request.GET.get("nombre")
     precio = 0
     idVendedor = request.GET.get("idUsuario")
@@ -1226,10 +1253,8 @@ def createTransaction(request):
         precio = Comida.objects.filter(nombre=nombreProducto).values('precio')[0]
         listaAux = list(precio.values())
         precio = listaAux[0]
-        print(precio)
     else:
         return HttpResponse('error message')
-    print(nombreProducto)
     transaccionNueva = Transacciones(idVendedor=idVendedor, precio=precio, nombreComida=nombreProducto)
     transaccionNueva.save()
     return JsonResponse({"transaccion": "realizada"})
