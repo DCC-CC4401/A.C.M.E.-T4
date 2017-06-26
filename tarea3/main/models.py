@@ -16,7 +16,7 @@ class Usuario(models.Model):
     tipo = models.IntegerField(choices=tipos)
     avatar = models.ImageField(upload_to = 'avatars')
     contraseña = models.CharField(max_length=200)
-    activo = models.BooleanField(default=False,blank=True)
+    activo = models.BooleanField(default=False, blank=True)
     litaFormasDePago = (
         (0, 'Efectivo'),
         (1, 'Tarjeta de Crédito'),

@@ -3,7 +3,6 @@ from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 
-
 import json
 from django.core.serializers.json import DjangoJSONEncoder
 from django.utils import timezone
@@ -29,21 +28,27 @@ from multiselectfield import MultiSelectField
 from django.core.files.storage import default_storage
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.models import User
+from django.db.models import Q
 
 # Create your views here.
 def index(request):
-    vendedoresJson = sellerList(request,0)
+    vendedoresJson = sellerList(request, 0)
     if request.user.is_authenticated():
         users = Usuario.objects.filter(django_user=request.user)
         if len(users) > 0:
             if users[0].tipo == 2 or users[0].tipo == 3:
-                return fichaVendedor(request,users[0].id)
-    lugares = Lugar.objects.filter().values_list('lat', 'lng', 'acurracy', 'usuario');
+                return fichaVendedor(request, users[0].id)
+
+    lugares = Lugar.objects.filter().values_list('lat', 'lng', 'acurracy', 'usuario')
     lugares_json = json.dumps(list(lugares), cls=DjangoJSONEncoder)
 
-    return render(request, 'main/index.html', {"vendedores": vendedoresJson, "lugares": lugares_json})
+    v = Usuario.objects.filter(Q(tipo=2) | Q(tipo=3)).values_list('nombre')
+    v_json = json.dumps(list(v), cls=DjangoJSONEncoder)
 
-def sellerList(request,int):
+    return render(request, 'main/index.html',
+                  {"vendedores": vendedoresJson, "lugares": lugares_json, "vendedoresDatos": 'hello'})
+
+def sellerList(request, int):
     vendedores = []
     vendAmb = []
     if request.user.is_authenticated():
@@ -1209,3 +1214,13 @@ def map(request):
         if(lugar.usuario.activo):
             lugares.append(lugar)
     return render(request, 'main/index2.html', {'lugares': lugares})
+
+def vendedores(request):
+    v = []
+
+    # lista de vendedores
+    for p in Usuario.objects.raw('SELECT * FROM usuario'):
+        if p.tipo == 2 or p.tipo == 3:
+            v.append(p)
+
+    return v
