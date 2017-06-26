@@ -329,27 +329,27 @@ def fichaVendedor(request, pkid):
     if request.user.is_authenticated:
         vendedoresJson = sellerList(request,0)
         usuario = Usuario.objects.get(django_user=request.user)
-        # if str(usuario.id) == str(pkid):  # es el dueño de la ficha,
-        #     if usuario.tipo is 2:  # vendedor fijo
-        #
-        #         argumentos = {"nombre": usuario.nombre, "tipo": usuario.tipo, "id": usuario.id,
-        #                       "horarioIni": usuario.horarioIni,
-        #                       "favoritos": obtenerFavoritos(usuario.id), "horarioFin": usuario.horarioFin,
-        #                       "avatar": usuario.avatar,
-        #                       "listaDeProductos": listaDeProductos, "activo": usuario.activo,
-        #                       "formasDePago": usuario.formasDePago,
-        #                       "activo": usuario.activo}
-        #         return render(request, 'main/vendedor-fijo.html', argumentos)
-        #
-        #     elif usuario.tipo is 3:  # vendedor ambulante
-        #         print("auth as vendedor ambulante y dueño")
-        #
-        #         argumentos = {"nombre": usuario.nombre, "tipo": usuario.tipo, "id": usuario.id,
-        #                       "avatar": usuario.avatar,
-        #                       "favoritos": obtenerFavoritos(usuario.id), "listaDeProductos": listaDeProductos,
-        #                       "activo": usuario.activo,
-        #                       "formasDePago": usuario.formasDePago}
-        #         return render(request, 'main/vendedor-ambulante.html', argumentos)
+        if str(usuario.id) == str(pkid):  # es el dueño de la ficha,
+            if usuario.tipo is 2:  # vendedor fijo
+
+                argumentos = {"nombre": usuario.nombre, "tipo": usuario.tipo, "id": usuario.id,
+                              "horarioIni": usuario.horarioIni,
+                              "favoritos": obtenerFavoritos(usuario.id), "horarioFin": usuario.horarioFin,
+                              "avatar": usuario.avatar,
+                              "listaDeProductos": listaDeProductos, "activo": usuario.activo,
+                              "formasDePago": usuario.formasDePago,
+                              "activo": usuario.activo}
+                return render(request, 'main/vendedor-fijo.html', argumentos)
+
+            elif usuario.tipo is 3:  # vendedor ambulante
+                print("auth as vendedor ambulante y dueño")
+
+                argumentos = {"nombre": usuario.nombre, "tipo": usuario.tipo, "id": usuario.id,
+                              "avatar": usuario.avatar,
+                              "favoritos": obtenerFavoritos(usuario.id), "listaDeProductos": listaDeProductos,
+                              "activo": usuario.activo,
+                              "formasDePago": usuario.formasDePago}
+                return render(request, 'main/vendedor-ambulante.html', argumentos)
 
 
         if usuario.tipo is 1:  # vista de alumno
