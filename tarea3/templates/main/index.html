@@ -34,30 +34,51 @@
 
             var v = "{{ vendedores }}";
             var vendedores = JSON.parse(v);
+            alert(vendedores);
+
+            var f = "{{ favoritos }}";
+            var favoritos = JSON.parse(f);
+            alert(favoritos);
 
             var arrayLength = lugares.length;
 
             for (var i = 0; i < arrayLength; i++) {
                 var pos2 = lugares[i];
+                var imageUrl = "https://userscontent2.emaze.com/images/b6b36505-1a68-4b82-ae15-93ca6f8bc03f/fb765b8752d50de50cfa15203f9a7acd.png";
+
+                var fav = false;
+                var length = favoritos.length;
+                for(var j = 0; j < length; j++) {
+                    if(vendedores[i] == favoritos[j]) {
+                        fav = true;
+                        break;
+                    }
+                }
+                
+                if(fav) {
+                    var imageUrl = "http://orig13.deviantart.net/c68b/f/2015/031/8/7/gamecube_logo_by_mac_does_art-d8g76n3.png";
+                }
+
+                var markerImage = {
+                    url: imageUrl,
+                    scaledSize: new google.maps.Size(50, 50),
+                };
 
                 var myLatLng = {lat: pos2[0], lng: pos2[1]};
                 var marker = new google.maps.Marker({
                     position: myLatLng,
                     map: map,
-                    title: nombres[i].toString()
+                    title: nombres[i].toString(),
+                    icon: markerImage
                 });
 
 
                 marker.addListener('click', (function(i) {
                     return function(){
                         var url = "{% url 'fichaVendedor' id %}";
-
-                    alert(vendedores[i]);
-                    location.href = url + vendedores[i];
-
+                        location.href = url + vendedores[i];
                     }
-
-                    })(i));
+                })(i));
             }
 
             var pos = {
@@ -65,7 +86,9 @@
               lng: position.coords.longitude
             };
 
-              var image = {
+
+
+            var image = {
                 url: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Rebel_Alliance_logo.svg/220px-Rebel_Alliance_logo.svg.png",
                 // This marker is 20 pixels wide by 32 pixels high.
                 scaledSize: new google.maps.Size(50, 50),

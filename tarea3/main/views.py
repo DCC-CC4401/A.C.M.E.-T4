@@ -33,11 +33,18 @@ from django.db.models import Q
 # Create your views here.
 def index(request):
     vendedoresJson = sellerList(request, 0)
+
     if request.user.is_authenticated():
         users = Usuario.objects.filter(django_user=request.user)
+
+        f = Favoritos.objects.filter(idAlumno=users[0].id).values_list('idVendedor')
+        f_json = json.dumps(list(f), cls=DjangoJSONEncoder)
+
         if len(users) > 0:
             if users[0].tipo == 2 or users[0].tipo == 3:
                 return fichaVendedor(request, users[0].id)
+    else:
+        f_json = None
 
     lugares = Lugar.objects.filter().values_list('lat', 'lng', 'acurracy', 'usuario')
     lugares_json = json.dumps(list(lugares), cls=DjangoJSONEncoder)
@@ -46,7 +53,8 @@ def index(request):
     v_json = json.dumps(list(v), cls=DjangoJSONEncoder)
 
     return render(request, 'main/index.html',
-                  {"vendedores": vendedoresJson, "lugares": lugares_json, "vendedoresNombres": v_json})
+                  {"vendedores": vendedoresJson, "lugares": lugares_json,
+                   "vendedoresNombres": v_json, "favoritos": f_json})
 
 def sellerList(request, int):
     vendedores = []
@@ -923,14 +931,7 @@ def redirigirEditar(id_vendedor, request):
         return render(request, url, argumentos)
 
 def inicioAlumno(request):
-    vendedores = []
-    # si son vendedores, crear lista de productos
-    for p in Usuario.objects.raw('SELECT * FROM usuario'):
-        if p.tipo == 2 or p.tipo == 3:
-            vendedores.append(p.id)
-    vendedoresJson = simplejson.dumps(vendedores)
-
-    return render(request, 'main/index.html', {"vendedores": vendedoresJson})
+    return index(request)
 
 @csrf_exempt
 def borrarProducto(request):
