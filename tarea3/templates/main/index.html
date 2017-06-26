@@ -27,12 +27,13 @@
           navigator.geolocation.getCurrentPosition(function(position) {
 
             var l = "{{ lugares }}";
-
             var lugares = JSON.parse(l);
 
-            var v = "{{ vendedoresDatos }}";
+            var n = "{{ vendedoresNombres }}";
+            var nombres = JSON.parse(n.replace(/&quot;/g,'"'));
 
-            var vende = JSON.parse(v.replace(/&quot;/g,'"'));
+            var v = "{{ vendedores }}";
+            var vendedores = JSON.parse(v);
 
             var arrayLength = lugares.length;
 
@@ -43,8 +44,20 @@
                 var marker = new google.maps.Marker({
                     position: myLatLng,
                     map: map,
-                    title: vende[i].toString()
+                    title: nombres[i].toString()
                 });
+
+
+                marker.addListener('click', (function(i) {
+                    return function(){
+                        var url = "{% url 'fichaVendedor' id %}";
+
+                    alert(vendedores[i]);
+                    location.href = url + vendedores[i];
+
+                    }
+
+                    })(i));
             }
 
             var pos = {
