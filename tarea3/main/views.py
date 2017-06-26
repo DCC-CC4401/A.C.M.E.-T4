@@ -44,7 +44,7 @@ def index(request):
             if users[0].tipo == 2 or users[0].tipo == 3:
                 return fichaVendedor(request, users[0].id)
     else:
-        f_json = None
+        f_json = []
 
     lugares = Lugar.objects.filter().values_list('lat', 'lng', 'acurracy', 'usuario')
     lugares_json = json.dumps(list(lugares), cls=DjangoJSONEncoder)
