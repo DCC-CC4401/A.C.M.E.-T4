@@ -28,9 +28,6 @@ class Usuario(models.Model):
     horarioFin = models.CharField(max_length=200,blank=True,null=True)
     alert = models.BooleanField(default=False,blank=True)
 
-    def setAlert(self,bool):
-        self.alert = bool
-
     def __str__(self):
         return self.nombre
 
@@ -38,7 +35,7 @@ class Usuario(models.Model):
         db_table = 'usuario'
 
 class Comida(models.Model):
-    idVendedor = models.IntegerField(default=0);
+    idVendedor = models.IntegerField(default=0)
     nombre = models.CharField(max_length=200,primary_key=True)
     listaCategorias = (
         (0, 'Cerdo'),
@@ -108,3 +105,10 @@ class Transacciones(models.Model):
 
     class Meta:
         db_table = 'transacciones'
+
+
+class Lugar(models.Model):
+    lat = models.FloatField()
+    lng = models.FloatField()
+    acurracy = models.FloatField()
+    usuario = models.ForeignKey('Usuario', on_delete=models.CASCADE, related_name="posicion")

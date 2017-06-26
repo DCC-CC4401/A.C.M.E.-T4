@@ -923,14 +923,24 @@ def notificarCambio(request):
 #         print("lanzando alerta a " + user[0].nombre)
 #     return redirect('index')
 
+# def dist(x1,y1,x2,y2):
+# cal1 = (x1 - x2)**2
+# cal2 = (y1 - y2)**2
+# return mathsqrt(cal1 + cal2)
+
 def alerta(request):
     amb = sellerList(request,1)
+    # user_not = Usuario.objects.get(django_user = request.user)
+    # posicion_user = Lugar.objects.get(usuario = user_not)
     if request.method == 'GET':
         if request.is_ajax():
             alert = request.GET.get('alert')
             if(alert == "true"):
                 for i in range(len(amb)):
                     user = Usuario.objects.filter(id=amb[i])
+                    # posicionV = Lugar.objects.get(usuario = user)
+                    # result = dist(posicion_user.lat, posicion_user.lng, posicionV.lat, posicionV.lng)
+                    # if result <= 15: UPDATE
                     user.update(alert=True)
                     print("lanzando alerta a " + user[0].nombre)
             data = {"alert": alert}
