@@ -36,6 +36,7 @@ urlpatterns = [
     url(r'^createTransaction/$', views.createTransaction, name='createTransaction'),
     url(r'^estadisticasVendedor/$', views.estadisticasVendedor, name='estadisticasVendedor'),
     url(r'^fichaVendedor/(\d*)$', views.fichaVendedor, name='fichaVendedor'),
+    url(r'^map/$', views.map, name='map'),
     url(r'^alerta/$', views.alerta, name='alerta'),
     url(r'^notificarCambio/$', views.notificarCambio, name='notificarCambio'),
 ]

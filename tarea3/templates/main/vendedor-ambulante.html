@@ -281,10 +281,30 @@
     }
 </script>
 <script>
+
+    var datos ="id=" + "{{id}}"+"&estado=true";
+
+    // Try HTML5 geolocation.
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function(position) {
+        var pos = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        };
+
+        datos = datos + "&lat=" + pos.lat.toString() + "&lng=" + pos.lng.toString();
+        alert(datos);
+
+
+      }, function() {
+      });
+    }
+
+
     function handleChange(checkbox) {
         console.log("overrided handlechange")
     if(checkbox.checked == true){
-         var datos ="id=" + "{{id}}"+"&estado=true";
+
          document.getElementById("estado-desktop").classList.remove("red-text");
          document.getElementById("estado-desktop").classList.add("light-green-text");
          document.getElementById("estado-desktop").innerHTML = "Disponible";
@@ -301,11 +321,12 @@
            success: function(data) {
            },
            error:function(data) {
-               alert("error in getting from server")
+               alert("error in getting from server checked")
            },
         });
     }else{
-        var datos ="id=" + "{{id}}"+"&estado=false";
+        var dat ="id=" + "{{id}}"+"&estado=false";
+
         document.getElementById("estado-desktop").classList.remove("light-green-text");
         document.getElementById("estado-desktop").classList.add("red-text");
         document.getElementById("estado-desktop").innerHTML = "No Disponible";
@@ -316,13 +337,13 @@
          $.ajax({
            url:{% url 'cambiarEstado' %},
            type: "GET",
-           data: datos,
+           data: dat,
            dataType: "json",
 
            success: function(data) {
            },
            error:function(data) {
-               alert("error in getting from server")
+               alert("error in getting from server deschecked")
            },
         });
    }
@@ -484,5 +505,8 @@
            },
          });
     }
+</script>
+<script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA697hvbSldh-Mmd5p8mE4TPFXTHcmpji4&callback=initMap">
 </script>
 {% endblock %}
