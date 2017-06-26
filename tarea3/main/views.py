@@ -8,6 +8,7 @@ from .forms import LoginForm
 from .forms import GestionProductosForm
 from .forms import editarProductosForm
 from .models import Usuario
+from .models import Lugar
 from .models import Comida
 from .models import Favoritos
 from .models import Imagen
@@ -71,6 +72,7 @@ def index(request):
                 Usuario.objects.filter(nombre=p.nombre).update(activo=0)
     vendedoresJson = simplejson.dumps(vendedores)
     return render(request, 'main/index.html', {"vendedores": vendedoresJson})
+
 
 def estadisticasVendedor(request):
     if request.user.is_authenticated():
@@ -1151,5 +1153,10 @@ def createTransaction(request):
     transaccionNueva.save()
     return JsonResponse({"transaccion": "realizada"})
 
+
 def map(request):
-    return render(request, 'main/index2.html', {})
+    lugares = []
+    for lugar in Lugar.objects.raw('SELECT * FROM lugar'):
+        if(lugar.usuario.activo):
+            lugares.append(lugar)
+    return render(request, 'main/index2.html', {'lugares': lugares})

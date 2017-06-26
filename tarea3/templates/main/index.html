@@ -15,10 +15,6 @@
     </style>
     <div id="map">
       <script>
-      // Note: This example requires that you consent to location sharing when
-      // prompted by your browser. If you see the error "The Geolocation service
-      // failed.", it means you probably did not give permission for the browser to
-      // locate you.
 
       function initMap() {
         var map = new google.maps.Map(document.getElementById('map'), {
@@ -38,6 +34,16 @@
             infoWindow.setPosition(pos);
             infoWindow.setContent('Tu ubicación');
             map.setCenter(pos);
+
+            var l = "{{ lugares }}";
+
+            var arrayLength = l.length;
+
+            for (var i = 0; i < arrayLength; i++) {
+              alert(l[i]);
+                //Do something
+            }
+
           }, function() {
             handleLocationError(true, infoWindow, map.getCenter());
           });
