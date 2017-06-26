@@ -111,6 +111,11 @@ class Transacciones(models.Model):
 
 class Lugar(models.Model):
     lat = models.FloatField()
-    lng = models.FloatField
+    lng = models.FloatField()
     acurracy = models.FloatField()
     usuario = models.ForeignKey('Usuario', on_delete=models.CASCADE, related_name="posicion")
+
+    class Meta:
+        db_table = 'Lugar'
+
+

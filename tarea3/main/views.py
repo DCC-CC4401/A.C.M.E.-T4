@@ -35,7 +35,13 @@ def index(request):
         if len(users) > 0:
             if users[0].tipo == 2 or users[0].tipo == 3:
                 return fichaVendedor(request,users[0].id)
-    return render(request, 'main/index.html', {"vendedores": vendedoresJson})
+
+    lugares = []
+    for lugar in Lugar.objects.raw('SELECT * FROM Lugar'):
+        if(lugar.usuario.activo):
+            lugares.append(lugar)
+
+    return render(request, 'main/index.html', {"vendedores": vendedoresJson, "lugares": lugares})
 
 def sellerList(request,int):
     vendedores = []
@@ -90,7 +96,6 @@ def sellerList(request,int):
         return vendedoresJson
     else:
         return vendAmb
-
 
 def estadisticasVendedor(request):
     if request.user.is_authenticated():
@@ -227,7 +232,6 @@ def estadisticasVendedor(request):
 
     return redirect('index')  # cae aqui si usuario no esta auntentificado o si no es vendedor
 
-
 def adminEdit(request):
     print(request.POST)
     nombre = request.POST.get("adminName")
@@ -243,18 +247,14 @@ def adminEdit(request):
     return render(request, 'main/adminEdit.html',
                   {"nombre": nombre, "contraseña": contraseña, "id": id, "email": email, "avatar": avatar})
 
-
 def signup(request):
     return render(request, 'main/signup.html', {})
-
 
 def signupAdmin(request):
     return render(request, 'main/signupAdmin.html', {})
 
-
 def loggedin(request):
     return render(request, 'main/loggedin.html', {})
-
 
 def loginAdmin(request):
     print("POST: ")
@@ -265,7 +265,6 @@ def loginAdmin(request):
     nombre = request.POST.get("name")
     contraseña = request.POST.get("password")
     return adminPOST(id, avatar, email, nombre, contraseña, request)
-
 
 def adminPOST(id, avatar, email, nombre, contraseña, request):
     # ids de todos los usuarios no admins
@@ -296,13 +295,11 @@ def adminPOST(id, avatar, email, nombre, contraseña, request):
                   "numeroUsuarios": numeroUsuarios, "numeroDeComidas": numeroDeComidas, "contraseña": contraseña}
     return render(request, 'main/baseAdmin.html', argumentos)
 
-
 def obtenerFavoritos(idVendedor):
     favoritos = 0
     for fila in Favoritos.objects.raw('SELECT * FROM favoritos WHERE idVendedor = "' + str(idVendedor) + '"'):
         favoritos += 1
     return favoritos
-
 
 def fichaVendedor(request, pkid):
     try:
@@ -393,7 +390,6 @@ def fichaVendedor(request, pkid):
             {"nombre": vendedor.nombre, "tipo": vendedor.tipo, "id": vendedor.id, "avatar": vendedor.avatar,
             "listaDeProductos": listaDeProductos, "formasDePago": vendedor.formasDePago, "horarioIni": vendedor.horarioIni,
             "horarioFin": vendedor.horarioFin, "activo": vendedor.activo})
-
 
 def loginReq(request):
     # inicaliar variables
@@ -525,14 +521,11 @@ def loginReq(request):
     else:
         return render(request, 'main/login.html', {"error": "Usuario o contraseña invalidos"})
 
-
 def gestionproductos(request):
     return render(request, 'main/agregar-productos.html')
 
-
 def vendedorprofilepage(request):
     return render(request, 'main/vendedor-profile-page.html', {})
-
 
 def formView(request):
     if request.session.has_key('id'):
@@ -551,14 +544,12 @@ def formView(request):
     else:
         return render(request, 'main/base.html', {})
 
-
 def logout(request):
     try:
         del request.session['id']
     except:
         pass
     return index(request)
-
 
 def register(request):
     tipo = request.POST.get("tipo")
@@ -589,7 +580,6 @@ def register(request):
                            formasDePago=formasDePago, horarioIni=horaInicial, horarioFin=horaFinal)
     usuarioNuevo.save()
     return loginReq(request)
-
 
 def productoReq(request):
     horarioIni = 0
@@ -623,7 +613,6 @@ def productoReq(request):
 
         return redirect('fichaVendedor', str(id))
 
-
 @csrf_exempt
 def editarVendedor(request):
     if request.user.is_authenticated:
@@ -651,7 +640,6 @@ def editarVendedor(request):
                       "activo": activo, "formasDePago": formasDePago}
         url = 'main/editar-vendedor-ambulante.html'
     return render(request, url, argumentos)
-
 
 @csrf_exempt
 def editarDatos(request):
@@ -727,7 +715,6 @@ def editarDatos(request):
     print(id_vendedor)
     return redirigirEditar(id_vendedor, request)
 
-
 def redirigirEditar(id_vendedor, request):
     for usr in Usuario.objects.raw('SELECT * FROM usuario WHERE id == "' + str(id_vendedor) + '"'):
         id = usr.id
@@ -781,7 +768,6 @@ def redirigirEditar(id_vendedor, request):
         print("chao")
         return render(request, url, argumentos)
 
-
 def inicioAlumno(request):
     vendedores = []
     # si son vendedores, crear lista de productos
@@ -792,7 +778,6 @@ def inicioAlumno(request):
 
     return render(request, 'main/index.html', {"vendedores": vendedoresJson})
 
-
 @csrf_exempt
 def borrarProducto(request):
     if request.method == 'GET':
@@ -801,7 +786,6 @@ def borrarProducto(request):
             Comida.objects.filter(nombre=comida).delete()
             data = {"eliminar": comida}
             return JsonResponse(data)
-
 
 @csrf_exempt
 def editarProducto(request):
@@ -842,7 +826,6 @@ def editarProducto(request):
             data = {"respuesta": nombreOriginal}
             return JsonResponse(data)
 
-
 def cambiarFavorito(request):
     if request.user.is_authenticated:
         alumno = Usuario.objects.get(django_user=request.user)
@@ -865,7 +848,6 @@ def cambiarFavorito(request):
 
             # return render_to_response('main/baseAdmin.html', {'form':form,'test':test}, context_instance=RequestContext(request))
 
-
 def cambiarEstado(request):
     if request.user.is_authenticated:
         vendedor = Usuario.objects.get(django_user=request.user)
@@ -876,8 +858,13 @@ def cambiarEstado(request):
             estado = request.GET.get('estado')
             id_vendedor = vendedor.id
             if estado == 'true':
+                lat = float(request.GET.get('lat'))
+                lng = float(request.GET.get('lng'))
+                l = Lugar(lat=lat, lng=lng, usuario=vendedor, acurracy=0)
+                l.save()
                 Usuario.objects.filter(id=id_vendedor).update(activo=True)
             else:
+                Lugar.objects.filter(usuario=request.user).delete()
                 Usuario.objects.filter(id=id_vendedor).update(activo=False)
             data = {"estado": estado}
             return JsonResponse(data)
@@ -915,7 +902,6 @@ def notificarCambio(request):
                 return JsonResponse(data)
     data = {"alert": False}
     return JsonResponse(data)
-
 
 # def alerta2(request):
 #     amb = sellerList(request,1)
@@ -960,7 +946,6 @@ def editarPerfilAlumno(request):
                                                               "favoritos": favoritos,
                                                               "nombres": nombres})
 
-
 def procesarPerfilAlumno(request):
     if request.user.is_authenticated:
         alumno = Usuario.objects.get(django_user=request.user)
@@ -1000,7 +985,6 @@ def procesarPerfilAlumno(request):
 
         return JsonResponse({"ejemplo": "correcto"})
 
-
 @csrf_exempt
 def borrarUsuario(request):
     if request.method == 'GET':
@@ -1010,7 +994,6 @@ def borrarUsuario(request):
             data = {"eliminar": uID}
             return JsonResponse(data)
 
-
 @csrf_exempt
 def agregarAvatar(request):
     if request.is_ajax() or request.method == 'FILES':
@@ -1019,7 +1002,6 @@ def agregarAvatar(request):
         nuevaImagen = Imagen(imagen=imagen)
         nuevaImagen.save()
         return HttpResponse("Success")
-
 
 def editarUsuarioAdmin(request):
     if request.method == 'GET':
@@ -1054,7 +1036,6 @@ def editarUsuarioAdmin(request):
 
         data = {"respuesta": userID}
         return JsonResponse(data)
-
 
 def editarUsuario(request):
     if request.method == 'GET':
@@ -1144,7 +1125,6 @@ def editarUsuario(request):
         data = {"respuesta": userID}
         return JsonResponse(data)
 
-
 def registerAdmin(request):
     tipo = request.POST.get("tipo")
     nombre = request.POST.get("nombre")
@@ -1177,7 +1157,6 @@ def registerAdmin(request):
     print(nombre)
     return adminPOST(id, avatar, email, nombre, contraseña, request)
 
-
 @csrf_exempt
 def verificarEmail(request):
     if request.is_ajax() or request.method == 'POST':
@@ -1189,7 +1168,6 @@ def verificarEmail(request):
         else:
             data = {"respuesta": "disponible"}
             return JsonResponse(data)
-
 
 def getStock(request):
     if request.method == "GET":
@@ -1206,7 +1184,6 @@ def getStock(request):
                 return JsonResponse({"stock": stock})
             Comida.objects.filter(nombre=request.GET.get("nombre")).update(stock=nuevoStock)
     return JsonResponse({"stock": stock})
-
 
 def createTransaction(request):
     print("GET:")
@@ -1225,7 +1202,6 @@ def createTransaction(request):
     transaccionNueva = Transacciones(idVendedor=idVendedor, precio=precio, nombreComida=nombreProducto)
     transaccionNueva.save()
     return JsonResponse({"transaccion": "realizada"})
-
 
 def map(request):
     lugares = []
