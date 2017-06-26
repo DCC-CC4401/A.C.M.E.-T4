@@ -864,7 +864,7 @@ def cambiarEstado(request):
                 l.save()
                 Usuario.objects.filter(id=id_vendedor).update(activo=True)
             else:
-                Lugar.objects.filter(usuario=request.user).delete()
+                Lugar.objects.filter(usuario=vendedor).delete()
                 Usuario.objects.filter(id=id_vendedor).update(activo=False)
             data = {"estado": estado}
             return JsonResponse(data)

@@ -321,11 +321,11 @@
            success: function(data) {
            },
            error:function(data) {
-               alert("error in getting from server")
+               alert("error in getting from server checked")
            },
         });
     }else{
-        var dat ="id=" + "{{id}}"+"&estado=true";
+        var dat ="id=" + "{{id}}"+"&estado=false";
 
         document.getElementById("estado-desktop").classList.remove("light-green-text");
         document.getElementById("estado-desktop").classList.add("red-text");
@@ -343,7 +343,7 @@
            success: function(data) {
            },
            error:function(data) {
-               alert("error in getting from server")
+               alert("error in getting from server deschecked")
            },
         });
    }

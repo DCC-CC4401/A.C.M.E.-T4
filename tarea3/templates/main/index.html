@@ -38,9 +38,11 @@
             var l = "{{ lugares }}";
 
             var arrayLength = l.length;
-            alert(arrayLength);
+
             for (var i = 0; i < arrayLength; i++) {
-                //Do something
+                alert(i);
+                var pos = lugares[i];
+                alert(pos.lat.toString() + " " + pos.lng.toString())
             }
 
           }, function() {
