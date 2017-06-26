@@ -58,6 +58,8 @@ class Comida(models.Model):
         (14, 'Vacuno'),
         (15, 'Vegano'),
         (16, 'Vegetariano'),
+        (17, 'Comida rapida'),
+        (18, 'Pizza')
     )
     categorias = MultiSelectField(choices=listaCategorias)
     descripcion = models.CharField(max_length=500)
