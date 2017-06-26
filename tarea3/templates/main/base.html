@@ -85,7 +85,7 @@
                 {% if logged_auth %}
                     {% if logged_user.tipo is 1 %}
                         <li><a href="{% url 'inicioAlumno' %}"><i class="material-icons">home</i>Inicio</a></li>
-                        <li><a href="{% url 'alerta' %}"><i class="material-icons">add_alert</i>Alerta policial</a></li>
+                        <li><a href="#" onmousedown=lanzar()><i class="material-icons">add_alert</i>Alerta policial</a></li>
                     {% elif logged_user.tipo is 2 %} {#fijo#}
                         <li><a href="{% url 'fichaVendedor' logged_user.id %}"><i class="material-icons">home</i>Inicio</a></li>
                         <li><a href="{% url 'estadisticasVendedor' %}"><i
@@ -107,7 +107,7 @@
                                 </label>
                             </div>
                         </li>
-                        <li><a href="{% url 'alerta' %}"><i class="material-icons">add_alert</i>Alerta policial</a></li>
+                        <li><a href="#" onmousedown=lanzar()><i class="material-icons">add_alert</i>Alerta policial</a></li>
 
                     {% else %}
                     {% endif %}
@@ -163,7 +163,6 @@
 
 <body>
 
-<div id="refresh"></div>
 {% block content %}
 {% endblock %}
 </body>
@@ -191,32 +190,54 @@
 </script>
 
 <script>
-var myVar = setInterval(function(){ Alert() }, 1000);
+var myVar = setInterval(function(){ Alert() }, 1500);
 
 function Alert() {
-  var alerta = "{{ logged_user.alert }}"
-  var user = {{ logged_user.tipo }}
+  var user = {{ logged_user.tipo }};
+  var resp = false;
   if(user == 3){
-      window.location.reload(false)
-  }
-  if(alerta == "True") {
-      console.log("entre")
-      alert('Carabineros cerca! CUIDADO')
-      var datos ="id=" + "{{id}}"+"&alert=false";
+      var datos ="id=" + "{{id}}"+"&alert=true";
       $.ajax({
-        url:{% url 'cambiarAlert' %},
+        url:{% url 'notificarCambio' %},
         type: "GET",
         data: datos,
         dataType: "json",
 
         success: function(data) {
-        },
-        error:function(data) {
-          alert("error in getting from server")
+            resp = data.alert;
+            if(resp == true){
+               alert('Carabineros cerca! CUIDADO');
+               var datos ="id=" + "{{id}}"+"&alert=false";
+               $.ajax({
+                  url:{% url 'cambiarAlert' %},
+                  type: "GET",
+                  data: datos,
+                  dataType: "json",
+
+                  success: function(data) {
+                  },
+               });
+            }
         },
       });
-      window.location.reload();
   }
+}
+
+</script>
+
+<script>
+
+function lanzar() {
+  var datos ="id=" + "{{id}}"+"&alert=true";
+  $.ajax({
+     url:{% url 'alerta' %},
+     type: "GET",
+     data: datos,
+     dataType: "json",
+
+     success: function(data) {
+     },
+  });
 }
 
 </script>

@@ -896,14 +896,38 @@ def cambiarAlert(request):
             data = {"alert": alert}
             return JsonResponse(data)
 
+def notificarCambio(request):
+    if request.user.is_authenticated:
+        vendedor = Usuario.objects.get(django_user=request.user)
+        if vendedor.tipo is not 3:  # si el usuario autenntificado no es vendedor ambulante, adios
+            return redirect('index')
+    if request.method == 'GET':
+        if request.is_ajax():
+            id_vendedor = vendedor.id
+            user = Usuario.objects.filter(id=id_vendedor)
+            data = {"alert": user[0].alert}
+            return JsonResponse(data)
+
+# def alerta2(request):
+#     fijo, amb = sellerList(request)
+#     for i in range(len(amb)):
+#         user = Usuario.objects.filter(id=amb[i])
+#         user.update(alert=True)
+#         print("lanzando alerta a " + user[0].nombre)
+#     return redirect('index')
+
 def alerta(request):
     fijo, amb = sellerList(request)
-    for i in range(len(amb)):
-        user = Usuario.objects.filter(id=amb[i])
-        user.update(alert=True)
-        print("lanzando alerta a " + user[0].nombre)
-    return redirect('index')
-    #return HttpResponse("Alerta lanzada")
+    if request.method == 'GET':
+        if request.is_ajax():
+            alert = request.GET.get('alert')
+            if(alert == "true"):
+                for i in range(len(amb)):
+                    user = Usuario.objects.filter(id=amb[i])
+                    user.update(alert=True)
+                    print("lanzando alerta a " + user[0].nombre)
+            data = {"alert": alert}
+            return JsonResponse(data)
 
 def editarPerfilAlumno(request):
     if request.user.is_authenticated:

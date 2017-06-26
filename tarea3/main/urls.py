@@ -37,4 +37,5 @@ urlpatterns = [
     url(r'^estadisticasVendedor/$', views.estadisticasVendedor, name='estadisticasVendedor'),
     url(r'^fichaVendedor/(\d*)$', views.fichaVendedor, name='fichaVendedor'),
     url(r'^alerta/$', views.alerta, name='alerta'),
+    url(r'^notificarCambio/$', views.notificarCambio, name='notificarCambio'),
 ]
