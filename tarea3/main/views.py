@@ -27,15 +27,30 @@ from django.core.files.storage import default_storage
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.models import User
 
-
 # Create your views here.
 def index(request):
+    vendedoresJson = sellerList(request,0)
+    if request.user.is_authenticated():
+        users = Usuario.objects.filter(django_user=request.user)
+        if len(users) > 0:
+            if users[0].tipo == 2 or users[0].tipo == 3:
+                return fichaVendedor(request,users[0].id)
+    return render(request, 'main/index.html', {"vendedores": vendedoresJson})
+
+def sellerList(request,int):
     vendedores = []
+    vendAmb = []
+    if request.user.is_authenticated():
+        users = Usuario.objects.filter(django_user=request.user)
     # lista de vendedores
     for p in Usuario.objects.raw('SELECT * FROM usuario'):
         if p.tipo == 2 or p.tipo == 3:
+            if int == 1:
+                if request.user.is_authenticated() and p.tipo == 3 and p != users[0]:
+                    vendAmb.append(p.id)
             vendedores.append(p.id)
     vendedoresJson = simplejson.dumps(vendedores)
+    vendedoresAmb = simplejson.dumps(vendAmb)
     # actualizar vendedores fijos
     for p in Usuario.objects.raw('SELECT * FROM usuario'):
         if p.tipo == 2:
@@ -71,7 +86,10 @@ def index(request):
             else:
                 Usuario.objects.filter(nombre=p.nombre).update(activo=0)
     vendedoresJson = simplejson.dumps(vendedores)
-    return render(request, 'main/index.html', {"vendedores": vendedoresJson})
+    if int == 0:
+        return vendedoresJson
+    else:
+        return vendAmb
 
 
 def estadisticasVendedor(request):
@@ -311,31 +329,32 @@ def fichaVendedor(request, pkid):
 
     # Puede ser vista por alumno, vendedor dueño o otro (no autentificado o otro vendedor)
     if request.user.is_authenticated:
+        vendedoresJson = sellerList(request,0)
         usuario = Usuario.objects.get(django_user=request.user)
-        if str(usuario.id) == str(pkid):  # es el dueño de la ficha,
-            if usuario.tipo is 2:  # vendedor fijo
+        # if str(usuario.id) == str(pkid):  # es el dueño de la ficha,
+        #     if usuario.tipo is 2:  # vendedor fijo
+        #
+        #         argumentos = {"nombre": usuario.nombre, "tipo": usuario.tipo, "id": usuario.id,
+        #                       "horarioIni": usuario.horarioIni,
+        #                       "favoritos": obtenerFavoritos(usuario.id), "horarioFin": usuario.horarioFin,
+        #                       "avatar": usuario.avatar,
+        #                       "listaDeProductos": listaDeProductos, "activo": usuario.activo,
+        #                       "formasDePago": usuario.formasDePago,
+        #                       "activo": usuario.activo}
+        #         return render(request, 'main/vendedor-fijo.html', argumentos)
+        #
+        #     elif usuario.tipo is 3:  # vendedor ambulante
+        #         print("auth as vendedor ambulante y dueño")
+        #
+        #         argumentos = {"nombre": usuario.nombre, "tipo": usuario.tipo, "id": usuario.id,
+        #                       "avatar": usuario.avatar,
+        #                       "favoritos": obtenerFavoritos(usuario.id), "listaDeProductos": listaDeProductos,
+        #                       "activo": usuario.activo,
+        #                       "formasDePago": usuario.formasDePago}
+        #         return render(request, 'main/vendedor-ambulante.html', argumentos)
 
-                argumentos = {"nombre": usuario.nombre, "tipo": usuario.tipo, "id": usuario.id,
-                              "horarioIni": usuario.horarioIni,
-                              "favoritos": obtenerFavoritos(usuario.id), "horarioFin": usuario.horarioFin,
-                              "avatar": usuario.avatar,
-                              "listaDeProductos": listaDeProductos, "activo": usuario.activo,
-                              "formasDePago": usuario.formasDePago,
-                              "activo": usuario.activo}
-                return render(request, 'main/vendedor-fijo.html', argumentos)
 
-            elif usuario.tipo is 3:  # vendedor ambulante
-                print("auth as vendedor ambulante y dueño")
-
-                argumentos = {"nombre": usuario.nombre, "tipo": usuario.tipo, "id": usuario.id,
-                              "avatar": usuario.avatar,
-                              "favoritos": obtenerFavoritos(usuario.id), "listaDeProductos": listaDeProductos,
-                              "activo": usuario.activo,
-                              "formasDePago": usuario.formasDePago}
-                return render(request, 'main/vendedor-ambulante.html', argumentos)
-
-
-        elif usuario.tipo is 1:  # vista de alumno
+        if usuario.tipo is 1:  # vista de alumno
             print("auth as alumno")
             vendedor = Usuario.objects.get(id=pkid)
             try:
@@ -358,23 +377,22 @@ def fichaVendedor(request, pkid):
                            "avatarSesion": usuario.avatar,
                            "favorito": favorito, "formasDePago": vendedor.formasDePago,
                            "horarioIni": vendedor.horarioIni,
-                           "horarioFin": vendedor.horarioFin, })
+                           "horarioFin": vendedor.horarioFin, "vendedores":vendedoresJson})
 
+    else:
         # vista de no registrado o otro vendedor
         print("auth as no alumno")
 
         vendedor = Usuario.objects.get(id=pkid)
         if vendedor.tipo is 2:
-            url = 'main/vendedor-ambulante-vistaAlumno-sinLogin.html'
-        else:
             url = 'main/vendedor-fijo-vistaAlumno-sinLogin.html'
+        else:
+            url = 'main/vendedor-ambulante-vistaAlumno-sinLogin.html'
 
         return render(request, url,
-                      {"nombre": vendedor.nombre, "tipo": vendedor.tipo, "id": vendedor.id, "avatar": vendedor.avatar,
-                       "listaDeProductos": listaDeProductos,
-                       "formasDePago": vendedor.formasDePago, "horarioIni": vendedor.horarioIni,
-                       "horarioFin": vendedor.horarioFin,
-                       "activo": vendedor.activo})
+            {"nombre": vendedor.nombre, "tipo": vendedor.tipo, "id": vendedor.id, "avatar": vendedor.avatar,
+            "listaDeProductos": listaDeProductos, "formasDePago": vendedor.formasDePago, "horarioIni": vendedor.horarioIni,
+            "horarioFin": vendedor.horarioFin, "activo": vendedor.activo})
 
 
 def loginReq(request):
@@ -864,6 +882,61 @@ def cambiarEstado(request):
             data = {"estado": estado}
             return JsonResponse(data)
 
+def cambiarAlert(request):
+    if request.user.is_authenticated:
+        vendedor = Usuario.objects.get(django_user=request.user)
+        if vendedor.tipo is not 3:  # si el usuario autenntificado no es vendedor ambulante, adios
+            return redirect('index')
+    amb = sellerList(request,1)
+    if request.method == 'GET':
+        if request.is_ajax():
+            alert = request.GET.get('alert')
+            if(alert == "false"):
+                for i in range(len(amb)):
+                    user = Usuario.objects.filter(id=amb[i])
+                    user.update(alert=False)
+                    print("sacando alerta a " + user[0].nombre)
+                id_vendedor = vendedor.id
+                Usuario.objects.filter(id=id_vendedor).update(alert=False)
+                print("sacando alerta a " + vendedor.nombre)
+            data = {"alert": alert}
+            return JsonResponse(data)
+
+def notificarCambio(request):
+    if request.user.is_authenticated:
+        vendedor = Usuario.objects.get(django_user=request.user)
+        if vendedor.tipo is not 3:  # si el usuario autenntificado no es vendedor ambulante, adios
+            return redirect('index')
+        if request.method == 'GET':
+            if request.is_ajax():
+                id_vendedor = vendedor.id
+                user = Usuario.objects.filter(id=id_vendedor)
+                data = {"alert": user[0].alert}
+                return JsonResponse(data)
+    data = {"alert": False}
+    return JsonResponse(data)
+
+
+# def alerta2(request):
+#     amb = sellerList(request,1)
+#     for i in range(len(amb)):
+#         user = Usuario.objects.filter(id=amb[i])
+#         user.update(alert=True)
+#         print("lanzando alerta a " + user[0].nombre)
+#     return redirect('index')
+
+def alerta(request):
+    amb = sellerList(request,1)
+    if request.method == 'GET':
+        if request.is_ajax():
+            alert = request.GET.get('alert')
+            if(alert == "true"):
+                for i in range(len(amb)):
+                    user = Usuario.objects.filter(id=amb[i])
+                    user.update(alert=True)
+                    print("lanzando alerta a " + user[0].nombre)
+            data = {"alert": alert}
+            return JsonResponse(data)
 
 def editarPerfilAlumno(request):
     if request.user.is_authenticated:

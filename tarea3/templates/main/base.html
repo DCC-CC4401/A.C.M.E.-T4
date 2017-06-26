@@ -85,13 +85,14 @@
                 {% if logged_auth %}
                     {% if logged_user.tipo is 1 %}
                         <li><a href="{% url 'inicioAlumno' %}"><i class="material-icons">home</i>Inicio</a></li>
+                        <li><a href="#" onmousedown=lanzar()><i class="material-icons">add_alert</i>Alerta policial</a></li>
                     {% elif logged_user.tipo is 2 %} {#fijo#}
-                        <li><a href="{% url 'index' %}"><i class="material-icons">home</i>Inicio</a></li>
+                        <li><a href="{% url 'fichaVendedor' logged_user.id %}"><i class="material-icons">home</i>Inicio</a></li>
                         <li><a href="{% url 'estadisticasVendedor' %}"><i
                                 class="material-icons">assessment</i>Datos de ventas</a></li>
 
                     {% elif logged_user.tipo is 3 %} {#ambulante#}
-                        <li><a href="{% url 'index' %}"><i class="material-icons">home</i>Inicio</a></li>
+                        <li><a href="{% url 'fichaVendedor' logged_user.id %}"><i class="material-icons">home</i>Inicio</a></li>
                         <li><a href="{% url 'estadisticasVendedor' %}"><i
                                 class="material-icons">assessment</i>Datos de ventas</a></li>
                         <li>
@@ -106,6 +107,7 @@
                                 </label>
                             </div>
                         </li>
+                        <li><a href="#" onmousedown=lanzar()><i class="material-icons">add_alert</i>Alerta policial</a></li>
 
                     {% else %}
                     {% endif %}
@@ -115,46 +117,10 @@
                     <li>
                         <div class="divider"></div>
                     </li>
+                    <li><a href="{% url 'index' %}"><i class="material-icons">home</i>Inicio</a></li>
                     <li><a href="{% url 'login' %}"><i class="material-icons">account_circle</i>Iniciar Sesión</a></li>
 
                 {% endif %}
-
-                {% comment %}
-                {% if logged_walking_seller %}
-                    <li><a href="{% url 'checkin' %}"><i class="material-icons">check circle</i>Haz Check-in!</a></li>
-                {% endif %}{% endcomment %}
-
-
-                <!--<li><div class="divider"></div></li>
-                <li><a class="subheader">Activo</a></li>
-                <li>
-                  <div class="switch" style="margin-left: 80px;">
-                    <label>
-                      No<input type="checkbox"><span class="lever"></span>Si
-                    </label>
-                  </div>                </li>
-                <li><a class="subheader">Filtros</a></li>
-                <li>
-                  <div class="switch" style="margin-left: 10px;">
-                    <label>
-                      <input type="checkbox"><span class="lever"></span>Sólo mostrar favoritos
-                    </label>
-                  </div>
-                </li>
-                <li>
-                  <div class="switch" style="margin-left: 10px;">
-                    <label>
-                      <input type="checkbox"><span class="lever"></span>Snacks
-                    </label>
-                  </div>
-                </li>
-                <li>
-                  <div class="switch" style="margin-left: 10px;">
-                    <label>
-                      <input type="checkbox"><span class="lever"></span>Almuerzos
-                    </label>
-                  </div>
-                </li>-->
             </ul>
         </div>
     </nav>
@@ -193,13 +159,13 @@
    }
 }
 </script>
+
 </head>
 
 <body>
 
 {% block content %}
 {% endblock %}
-
 </body>
 <script>
     function EstadoActual() {
@@ -224,10 +190,62 @@
     }
 </script>
 
+<script>
+var myVar = setInterval(function(){ Alert() }, 1500);
+
+function Alert() {
+      var user = {{ logged_user.tipo }};
+      var resp = false;
+      if(user == 3){
+          var datos ="id=" + "{{id}}"+"&alert=true";
+          $.ajax({
+            url:{% url 'notificarCambio' %},
+            type: "GET",
+            data: datos,
+            dataType: "json",
+
+            success: function(data) {
+                resp = data.alert;
+                if(resp == true){
+                   alert('Carabineros cerca! CUIDADO');
+                   var datos ="id=" + "{{id}}"+"&alert=false";
+                   $.ajax({
+                      url:{% url 'cambiarAlert' %},
+                      type: "GET",
+                      data: datos,
+                      dataType: "json",
+
+                      success: function(data) {
+                      },
+                   });
+                }
+            },
+          });
+      }
+}
+
+</script>
+
+<script>
+
+function lanzar() {
+  var datos ="id=" + "{{id}}"+"&alert=true";
+  $.ajax({
+     url:{% url 'alerta' %},
+     type: "GET",
+     data: datos,
+     dataType: "json",
+
+     success: function(data) {
+     },
+  });
+}
+
+</script>
 
 
- <script>
-    window.onload = EstadoActual();
-    window.onload = switchActivo();
+<script>
+   window.onload = EstadoActual();
+   window.onload = switchActivo();
 </script>
 </html>

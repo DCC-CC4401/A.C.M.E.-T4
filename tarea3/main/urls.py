@@ -14,6 +14,7 @@ urlpatterns = [
     url(r'^loggedin/', views.loggedin, name='loggedin'),
     url(r'^productoReq/', views.productoReq, name='productoReq'),
     url(r'^cambiarEstado/$', views.cambiarEstado,name='cambiarEstado'),
+    url(r'^cambiarAlert/$', views.cambiarAlert,name='cambiarAlert'),
     url(r'^editarVendedor/$', views.editarVendedor,name='editarVendedor'),
     url(r'^editarDatos/$', views.editarDatos,name='editarDatos'),
     url(r'^inicioAlumno/', views.inicioAlumno, name='inicioAlumno'),
@@ -36,5 +37,6 @@ urlpatterns = [
     url(r'^estadisticasVendedor/$', views.estadisticasVendedor, name='estadisticasVendedor'),
     url(r'^fichaVendedor/(\d*)$', views.fichaVendedor, name='fichaVendedor'),
     url(r'^map/$', views.map, name='map'),
-
+    url(r'^alerta/$', views.alerta, name='alerta'),
+    url(r'^notificarCambio/$', views.notificarCambio, name='notificarCambio'),
 ]
