@@ -52,7 +52,6 @@ def tiempo(p):
     horaf = hf[:2]
     mini = hi[3:5]
     minf = hf[3:5]
-    print(datetime.datetime.now().time())
     tiempo = str(datetime.datetime.now().time())
     hora = tiempo[:2]
     minutos = tiempo[3:5]
@@ -677,7 +676,6 @@ def editarDatos(request):
         for p in Usuario.objects.raw('SELECT * FROM usuario'):
             if p.tipo == 2:
                 estado = tiempo(p)
-                print(estado)
                 if estado == "activo":
                     Usuario.objects.filter(nombre=p.nombre).update(activo=1)
                 else:
@@ -898,9 +896,12 @@ def notificarCambio(request):
 #     return redirect('index')
 
 def dist(x1,y1,x2,y2):
-    cal1 = (x1 - x2)**2
-    cal2 = (y1 - y2)**2
-    return math.sqrt(cal1 + cal2)
+    radT = 6378.0
+    lat = ((x1 - x2)*math.pi)/180.0
+    long = ((y1 - y2)*math.pi)/180.0
+    a = (math.sin(lat/2))**2 + math.cos((x1*math.pi)/180.0)*math.cos((x2*math.pi)/180.0)*((math.sin(long/2))**2)
+    c = 2*radT*math.asin(math.sqrt(a))
+    return c
 
 def alerta(request):
     amb = sellerList(request,1)
