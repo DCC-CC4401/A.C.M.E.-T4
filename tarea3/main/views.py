@@ -1,4 +1,6 @@
 import datetime
+
+import math
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
@@ -120,33 +122,6 @@ def sellerList(request,int):
     for p in Usuario.objects.raw('SELECT * FROM usuario'):
         if p.tipo == 2:
             estado = tiempo(p)
-            # hi = p.horarioIni
-            # hf = p.horarioFin
-            # horai = hi[:2]
-            # horaf = hf[:2]
-            # mini = hi[3:5]
-            # minf = hf[3:5]
-            # print(datetime.datetime.now().time())
-            # tiempo = str(datetime.datetime.now().time())
-            # print(tiempo)
-            # hora = tiempo[:2]
-            # minutos = tiempo[3:5]
-            # estado = ""
-            # if horaf >= hora and hora >= horai:
-            #     if horai == hora:
-            #         if minf >= minutos and minutos >= mini:
-            #             estado = "activo"
-            #         else:
-            #             estado = "inactivo"
-            #     elif horaf == hora:
-            #         if minf >= minutos and minutos >= mini:
-            #             estado = "activo"
-            #         else:
-            #             estado = "inactivo"
-            #     else:
-            #         estado = "activo"
-            # else:
-            #     estado = "inactivo"
             if estado == "activo":
                 Usuario.objects.filter(nombre=p.nombre).update(activo=1)
             else:
@@ -701,33 +676,6 @@ def editarDatos(request):
             # actualizar vendedores fijos
         for p in Usuario.objects.raw('SELECT * FROM usuario'):
             if p.tipo == 2:
-                # hi = p.horarioIni
-                # hf = p.horarioFin
-                # horai = hi[:2]
-                # horaf = hf[:2]
-                # mini = hi[3:5]
-                # minf = hf[3:5]
-                # print(datetime.datetime.now().time())
-                # tiempo = str(datetime.datetime.now().time())
-                # print(tiempo)
-                # hora = tiempo[:2]
-                # minutos = tiempo[3:5]
-                # estado = ""
-                # if horaf >= hora and hora >= horai:
-                #     if horai == hora:
-                #         if minf >= minutos and minutos >= mini:
-                #             estado = "activo"
-                #         else:
-                #             estado = "inactivo"
-                #     elif horaf == hora:
-                #         if minf >= minutos and minutos >= mini:
-                #             estado = "activo"
-                #         else:
-                #             estado = "inactivo"
-                #     else:
-                #         estado = "activo"
-                # else:
-                #     estado = "inactivo"
                 estado = tiempo(p)
                 print(estado)
                 if estado == "activo":
@@ -949,26 +897,31 @@ def notificarCambio(request):
 #         print("lanzando alerta a " + user[0].nombre)
 #     return redirect('index')
 
-# def dist(x1,y1,x2,y2):
-# cal1 = (x1 - x2)**2
-# cal2 = (y1 - y2)**2
-# return mathsqrt(cal1 + cal2)
+def dist(x1,y1,x2,y2):
+    cal1 = (x1 - x2)**2
+    cal2 = (y1 - y2)**2
+    return math.sqrt(cal1 + cal2)
 
 def alerta(request):
     amb = sellerList(request,1)
-    # user_not = Usuario.objects.get(django_user = request.user)
-    # posicion_user = Lugar.objects.get(usuario = user_not)
+    user_not = Usuario.objects.get(django_user = request.user)
+    posicion_user = Lugar.objects.filter(usuario = user_not)
     if request.method == 'GET':
         if request.is_ajax():
             alert = request.GET.get('alert')
             if(alert == "true"):
                 for i in range(len(amb)):
                     user = Usuario.objects.filter(id=amb[i])
-                    # posicionV = Lugar.objects.get(usuario = user)
-                    # result = dist(posicion_user.lat, posicion_user.lng, posicionV.lat, posicionV.lng)
-                    # if result <= 15: UPDATE
-                    user.update(alert=True)
-                    print("lanzando alerta a " + user[0].nombre)
+                    if len(posicion_user) > 0:
+                        posicionV = Lugar.objects.filter(usuario = user[0])
+                        if len(posicionV) > 0:
+                            result = dist(posicion_user[0].lat, posicion_user[0].lng, posicionV[0].lat, posicionV[0].lng)
+                            if result <= 15:
+                                user.update(alert=True)
+                                print("lanzando alerta a " + user[0].nombre)
+                    else: # si no esta posicionado -> arroja alerta a todos
+                        user.update(alert=True)
+                        print("lanzando alerta a " + user[0].nombre)
             data = {"alert": alert}
             return JsonResponse(data)
 
