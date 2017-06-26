@@ -37,12 +37,13 @@
 
             var l = "{{ lugares }}";
 
-            var arrayLength = l.length;
+            var lugares = JSON.parse(l);
+
+            var arrayLength = lugares.length;
 
             for (var i = 0; i < arrayLength; i++) {
-                alert(i);
-                var pos = lugares[i];
-                alert(pos.lat.toString() + " " + pos.lng.toString())
+                var pos2 = lugares[i];
+                alert(pos2.toString())
             }
 
           }, function() {

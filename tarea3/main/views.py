@@ -3,6 +3,9 @@ from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 
+
+import json
+from django.core.serializers.json import DjangoJSONEncoder
 from django.utils import timezone
 from .forms import LoginForm
 from .forms import GestionProductosForm
@@ -35,13 +38,10 @@ def index(request):
         if len(users) > 0:
             if users[0].tipo == 2 or users[0].tipo == 3:
                 return fichaVendedor(request,users[0].id)
+    lugares = Lugar.objects.filter().values_list('lat', 'lng', 'acurracy', 'usuario');
+    lugares_json = json.dumps(list(lugares), cls=DjangoJSONEncoder)
 
-    lugares = []
-    for lugar in Lugar.objects.raw('SELECT * FROM Lugar'):
-        if(lugar.usuario.activo):
-            lugares.append(lugar)
-
-    return render(request, 'main/index.html', {"vendedores": vendedoresJson, "lugares": lugares})
+    return render(request, 'main/index.html', {"vendedores": vendedoresJson, "lugares": lugares_json})
 
 def sellerList(request,int):
     vendedores = []
