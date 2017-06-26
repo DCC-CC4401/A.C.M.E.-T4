@@ -117,6 +117,7 @@
                     <li>
                         <div class="divider"></div>
                     </li>
+                    <li><a href="{% url 'index' %}"><i class="material-icons">home</i>Inicio</a></li>
                     <li><a href="{% url 'login' %}"><i class="material-icons">account_circle</i>Iniciar Sesión</a></li>
 
                 {% endif %}
@@ -193,34 +194,34 @@
 var myVar = setInterval(function(){ Alert() }, 1500);
 
 function Alert() {
-  var user = {{ logged_user.tipo }};
-  var resp = false;
-  if(user == 3){
-      var datos ="id=" + "{{id}}"+"&alert=true";
-      $.ajax({
-        url:{% url 'notificarCambio' %},
-        type: "GET",
-        data: datos,
-        dataType: "json",
+      var user = {{ logged_user.tipo }};
+      var resp = false;
+      if(user == 3){
+          var datos ="id=" + "{{id}}"+"&alert=true";
+          $.ajax({
+            url:{% url 'notificarCambio' %},
+            type: "GET",
+            data: datos,
+            dataType: "json",
 
-        success: function(data) {
-            resp = data.alert;
-            if(resp == true){
-               alert('Carabineros cerca! CUIDADO');
-               var datos ="id=" + "{{id}}"+"&alert=false";
-               $.ajax({
-                  url:{% url 'cambiarAlert' %},
-                  type: "GET",
-                  data: datos,
-                  dataType: "json",
+            success: function(data) {
+                resp = data.alert;
+                if(resp == true){
+                   alert('Carabineros cerca! CUIDADO');
+                   var datos ="id=" + "{{id}}"+"&alert=false";
+                   $.ajax({
+                      url:{% url 'cambiarAlert' %},
+                      type: "GET",
+                      data: datos,
+                      dataType: "json",
 
-                  success: function(data) {
-                  },
-               });
-            }
-        },
-      });
-  }
+                      success: function(data) {
+                      },
+                   });
+                }
+            },
+          });
+      }
 }
 
 </script>
