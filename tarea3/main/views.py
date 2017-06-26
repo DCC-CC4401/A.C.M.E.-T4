@@ -46,7 +46,7 @@ def index(request):
     v_json = json.dumps(list(v), cls=DjangoJSONEncoder)
 
     return render(request, 'main/index.html',
-                  {"vendedores": vendedoresJson, "lugares": lugares_json, "vendedoresDatos": 'hello'})
+                  {"vendedores": vendedoresJson, "lugares": lugares_json, "vendedoresDatos": v_json})
 
 def sellerList(request, int):
     vendedores = []

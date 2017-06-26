@@ -41,20 +41,19 @@
 
             var v = "{{ vendedoresDatos }}";
 
-
-            alert(v);
+            var vende = JSON.parse(v.replace(/&quot;/g,'"'));
 
             var arrayLength = lugares.length;
 
             for (var i = 0; i < arrayLength; i++) {
                 var pos2 = lugares[i];
-                //alert(vendedores[i]);
+                alert(vende[i])
 
                 var myLatLng = {lat: pos2[0], lng: pos2[1]};
                 var marker = new google.maps.Marker({
                     position: myLatLng,
                     map: map,
-                    title: ""
+                    title: vende[i].toString()
                 });
             }
 
