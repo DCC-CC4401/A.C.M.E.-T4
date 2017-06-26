@@ -29,8 +29,7 @@
 
     <script>
         function vendedor2() {
-            var vendedor =
-            {{ vendedores|safe }}
+            var vendedor = {{ vendedores|safe }};
             var vendedorId = vendedor[1];
             window.location.href = ("../fichaVendedor/" + vendedorId);
         }
