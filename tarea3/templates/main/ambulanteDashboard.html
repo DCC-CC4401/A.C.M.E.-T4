@@ -19,9 +19,15 @@
 
 <div class="section">
           <div class="row">
-                  <h2 style="text-align: center;">Ventas de hoy</h2>
+                  <h2 style="text-align: center;">{{ Titulo }}</h2>
           </div>
-</div>
+    <div class="row">
+                  <h6 style="text-align: center;">{{ desde}}</h6>
+              <div class="container">
+                  <div class="row">
+                  <h6 style="text-align: center;">{{ hasta}}</h6>
+              <div class="container">
+
 
 <div class="row">
     <div class="row"></div>
@@ -48,6 +54,48 @@
               </table>
         </div>
     </div>
+    <div class="z-depth-1 grey lighten-4 row" style="margin-left: 5%; margin-right: 5%; padding: 32px 48px 0px 48px; border: 1px solid #EEE;">
+
+
+
+
+
+          <form enctype="multipart/form-data" class="col s12 m12" method="post" action="{% url 'porHorario' %}" > {% csrf_token %}
+            <div class='row'>
+              <div class='col s12 m12'>
+              </div>
+            </div>
+
+              <div class="row">
+                        <div class="label" style="margin-left: 1%;"><h5>Filtrar por Rango</h5></div>
+                       <div class="input-field col s6 m6">
+                           <div class="label" style="margin-left: 1%;">Fecha Inicio</div>
+                           <i class="material-icons prefix">query_builder</i>
+                          <input  value="" id="horaIni" name="fechaIni" type="date" class="active validate" >
+
+
+{#                          <label for="horaIni">Hora de Inicio</label>#}
+                       </div>
+                       <div class="input-field col s6 m6">
+                           <div class="label" style="margin-left: 1%;">Fecha Término</div>
+                           <i class="material-icons prefix">query_builder</i>
+                          <input  value="" id="horaIni" name="fechaFin" type="date" class="active validate" >
+                           
+
+{#                          <label for="horaFin">Hora de Término</label>#}
+                       </div>
+                    </div>
+
+
+              <div id="file-upload" class="section">
+             <!--Default version-->
+
+            <div class='row'>
+                    <button type="submit" class='col l5 offset-l4 btn btn-large waves-effect button teal' >&emsp; &emsp;Filtrar<i class="material-icons right">send</i></button>
+            </div>
+            </form>
+
+          </div>
 </div>
 
 

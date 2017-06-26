@@ -27,6 +27,7 @@ urlpatterns = [
     url(r'^agregarAvatar/', views.agregarAvatar, name='agregarAvatar'),
     url(r'^signupAdmin/$', views.signupAdmin,name='signupAdmin'),
     url(r'^registerAdmin/$', views.registerAdmin,name='registerAdmin'),
+    url(r'^EstadisticasRango/$', views.estadisticasRango, name='porHorario'),
     url(r'^getStock/$', views.getStock,name='getStock'),
     url(r'^verificarEmail/$', views.verificarEmail,name='verificarEmail'),
     url(r'^adminEdit/$', views.adminEdit,name='adminEdit'),
@@ -35,5 +36,6 @@ urlpatterns = [
     url(r'^createTransaction/$', views.createTransaction, name='createTransaction'),
     url(r'^estadisticasVendedor/$', views.estadisticasVendedor, name='estadisticasVendedor'),
     url(r'^fichaVendedor/(\d*)$', views.fichaVendedor, name='fichaVendedor'),
+
 
 ]

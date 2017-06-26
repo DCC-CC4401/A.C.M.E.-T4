@@ -72,6 +72,155 @@ def index(request):
     vendedoresJson = simplejson.dumps(vendedores)
     return render(request, 'main/index.html', {"vendedores": vendedoresJson})
 
+
+def estadisticasRango(request):
+    if request.user.is_authenticated():
+        fini= request.POST.get("fechaIni");
+        ffin = request.POST.get("fechaFin");
+        usuario = Usuario.objects.get(django_user=request.user)
+        id = usuario.id
+        if usuario.tipo is 2:  ## Vendedor fijo
+            # transacciones hechas por hoy
+            transaccionesDiarias = Transacciones.objects.filter(idVendedor=id).values('fecha').annotate(
+                conteo=Count('fecha'))
+            temp_transaccionesDiarias = list(transaccionesDiarias)
+            transaccionesDiariasArr = []
+            for element in temp_transaccionesDiarias:
+                aux = []
+                aux.append(element['fecha'])
+                aux.append(element['conteo'])
+                transaccionesDiariasArr.append(aux)
+            transaccionesDiariasArr = simplejson.dumps(transaccionesDiariasArr)
+            #print(transaccionesDiariasArr)
+
+
+            # ganancias de hoy
+            gananciasDiarias = Transacciones.objects.filter(idVendedor=id).values('fecha').annotate(
+                ganancia=Sum('precio'))
+            temp_gananciasDiarias = list(gananciasDiarias)
+            gananciasDiariasArr = []
+            for element in temp_gananciasDiarias:
+                aux = []
+                aux.append(element['fecha'])
+                aux.append(element['ganancia'])
+                # print("AUX")
+                # print(aux)
+                gananciasDiariasArr.append(aux)
+            gananciasDiariasArr = simplejson.dumps(gananciasDiariasArr)
+            #print(gananciasDiariasArr)
+
+
+            # todos los productos del vendedor
+            productos = Comida.objects.filter(idVendedor=id).values('nombre', 'precio')
+            temp_productos = list(productos)
+            productosArr = []
+            productosPrecioArr = []
+            for element in temp_productos:
+                aux = []
+                productosArr.append(element['nombre'])
+                aux.append(element['nombre'])
+                aux.append(element['precio'])
+                productosPrecioArr.append(aux)
+            productosArr = simplejson.dumps(productosArr)
+            productosPrecioArr = simplejson.dumps(productosPrecioArr)
+            ##print(productosPrecioArr)
+
+            # productos vendidos hoy con su cantidad respectiva
+            fechaHoy = str(timezone.now()).split(' ', 1)[0]
+            productosHoy = Transacciones.objects.filter(idVendedor=id,fecha__range=[fini,ffin]).values('nombreComida').annotate(
+                conteo=Count('nombreComida'))
+            temp_productosHoy = list(productosHoy)
+            productosHoyArr = []
+            for element in temp_productosHoy:
+                aux = []
+                aux.append(element['nombreComida'])
+                aux.append(element['conteo'])
+                productosHoyArr.append(aux)
+            productosHoyArr = simplejson.dumps(productosHoyArr)
+
+            print(productosHoyArr)
+
+            fechaini= fini.split("-")
+            fechafin=ffin.split("-")
+            desde="Desde : "+ fechaini[2]+" / " +fechaini[1]+" / "+ fechaini[0]
+            hasta="Hasta : "+ fechafin[2]+" / " +fechafin[1]+" / "+ fechafin[0]
+            return render(request, 'main/fijoDashboard.html',
+                          {"transacciones": transaccionesDiariasArr, "ganancias": gananciasDiariasArr,
+                           "productos": productosArr, "productosHoy": productosHoyArr,
+                           "productosPrecio": productosPrecioArr, "Titulo": "Ventas por Rango","desde":desde,"hasta":hasta})
+
+        elif usuario.tipo is 3:  # Vendedor ambulante
+            # transacciones hechas por hoy
+            transaccionesDiarias = Transacciones.objects.filter(idVendedor=id).values('fecha').annotate(
+                conteo=Count('fecha'))
+            temp_transaccionesDiarias = list(transaccionesDiarias)
+            transaccionesDiariasArr = []
+            for element in temp_transaccionesDiarias:
+                aux = []
+                aux.append(element['fecha'])
+                aux.append(element['conteo'])
+                transaccionesDiariasArr.append(aux)
+            transaccionesDiariasArr = simplejson.dumps(transaccionesDiariasArr)
+            # print(transaccionesDiariasArr)
+
+            # ganancias de hoy
+            gananciasDiarias = Transacciones.objects.filter(idVendedor=id).values('fecha').annotate(
+                ganancia=Sum('precio'))
+            temp_gananciasDiarias = list(gananciasDiarias)
+            gananciasDiariasArr = []
+            for element in temp_gananciasDiarias:
+                aux = []
+                aux.append(element['fecha'])
+                aux.append(element['ganancia'])
+                # print("AUX")
+                # print(aux)
+                gananciasDiariasArr.append(aux)
+            gananciasDiariasArr = simplejson.dumps(gananciasDiariasArr)
+            # print(gananciasDiariasArr)
+
+
+            # todos los productos del vendedor
+            productos = Comida.objects.filter(idVendedor=id).values('nombre', 'precio')
+            temp_productos = list(productos)
+            productosArr = []
+            productosPrecioArr = []
+            for element in temp_productos:
+                aux = []
+                productosArr.append(element['nombre'])
+                aux.append(element['nombre'])
+                aux.append(element['precio'])
+                productosPrecioArr.append(aux)
+            productosArr = simplejson.dumps(productosArr)
+            productosPrecioArr = simplejson.dumps(productosPrecioArr)
+            print(productosPrecioArr)
+
+            # productos vendidos hoy con su cantidad respectiva
+            fechaHoy = str(timezone.now()).split(' ', 1)[0]
+            productosHoy = Transacciones.objects.filter(idVendedor=id, fecha__range=[fini,ffin]).values('nombreComida').annotate(
+                conteo=Count('nombreComida'))
+            temp_productosHoy = list(productosHoy)
+            productosHoyArr = []
+            for element in temp_productosHoy:
+                aux = []
+                aux.append(element['nombreComida'])
+                aux.append(element['conteo'])
+                productosHoyArr.append(aux)
+            productosHoyArr = simplejson.dumps(productosHoyArr)
+            print(fini)
+            # print(productosHoyArr)
+
+            fechaini = fini.split("-")
+            fechafin = ffin.split("-")
+            desde = "Desde : " + fechaini[2] + " / " + fechaini[1] + " / " + fechaini[0]
+            hasta = "Hasta : " + fechafin[2] + " / " + fechafin[1] + " / " + fechafin[0]
+            return render(request, 'main/ambulanteDashboard.html',
+                          {"transacciones": transaccionesDiariasArr, "ganancias": gananciasDiariasArr,
+                           "productos": productosArr, "productosHoy": productosHoyArr,
+                           "productosPrecio": productosPrecioArr, "Titulo": "Ventas por Rango","desde": desde, "hasta":hasta})
+
+    return redirect('index')  # cae aqui si usuario no esta auntentificado o si no es vendedor
+
+
 def estadisticasVendedor(request):
     if request.user.is_authenticated():
         usuario = Usuario.objects.get(django_user=request.user)
@@ -139,7 +288,7 @@ def estadisticasVendedor(request):
             return render(request, 'main/fijoDashboard.html',
                           {"transacciones": transaccionesDiariasArr, "ganancias": gananciasDiariasArr,
                            "productos": productosArr, "productosHoy": productosHoyArr,
-                           "productosPrecio": productosPrecioArr})
+                           "productosPrecio": productosPrecioArr,"Titulo": "Ventas del Día","desde":"","hasta":""})
 
         elif usuario.tipo is 3:  # Vendedor ambulante
             # transacciones hechas por hoy
@@ -203,7 +352,7 @@ def estadisticasVendedor(request):
             return render(request, 'main/ambulanteDashboard.html',
                           {"transacciones": transaccionesDiariasArr, "ganancias": gananciasDiariasArr,
                            "productos": productosArr, "productosHoy": productosHoyArr,
-                           "productosPrecio": productosPrecioArr})
+                           "productosPrecio": productosPrecioArr,"Titulo": "Ventas del Día","desde":"","hasta":""})
 
     return redirect('index')  # cae aqui si usuario no esta auntentificado o si no es vendedor
 
