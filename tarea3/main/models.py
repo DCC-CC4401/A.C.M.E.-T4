@@ -37,9 +37,6 @@ class Usuario(models.Model):
     class Meta:
         db_table = 'usuario'
 
-
-
-
 class Comida(models.Model):
     idVendedor = models.IntegerField(default=0);
     nombre = models.CharField(max_length=200,primary_key=True)
