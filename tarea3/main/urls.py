@@ -40,4 +40,6 @@ urlpatterns = [
     url(r'^map/$', views.map, name='map'),
     url(r'^alerta/$', views.alerta, name='alerta'),
     url(r'^notificarCambio/$', views.notificarCambio, name='notificarCambio'),
+    url(r'^indexFiltro/$', views.indexFiltro, name='indexFiltro'),
+
 ]

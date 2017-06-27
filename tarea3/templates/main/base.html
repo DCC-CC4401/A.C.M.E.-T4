@@ -121,6 +121,34 @@
                     <li><a href="{% url 'login' %}"><i class="material-icons">account_circle</i>Iniciar Sesión</a></li>
 
                 {% endif %}
+                        <div class = "row">
+                  <div>
+                      Selecciona una categoria:
+                  </div>
+                  <select class="browser-default" name="categoria">
+                      <option name="categoria" value="" disabled selected>Categorias</option>
+                      <option name="categoria" value="0">Cerdo</option>
+                      <option name="categoria" value="1">Chino</option>
+                      <option name="categoria" value="2">Completos</option>
+                      <option name="categoria" value="3">Egipcio</option>
+                      <option name="categoria" value="4">Empanadas</option>
+                      <option name="categoria" value="5">Ensalada</option>
+                      <option name="categoria" value="6">Japones</option>
+                      <option name="categoria" value="7">Pan</option>
+                      <option name="categoria" value="8">Papas fritas</option>
+                      <option name="categoria" value="9">Pasta</option>
+                      <option name="categoria" value="10">Pescado</option>
+                      <option name="categoria" value="11">Pollo</option>
+                      <option name="categoria" value="12">Postres</option>
+                      <option name="categoria" value="13">Sushi</option>
+                      <option name="categoria" value="14">Vacuno</option>
+                      <option name="categoria" value="15">Vegano</option>
+                      <option name="categoria" value="16">Vegetariano</option>
+                      <option name="categoria" value="17">Comida rapida</option>
+                      <option name="categoria" value="18">Pizza</option>
+                  </select>
+              </div>
+                <li><a href="{% url 'indexFiltro' categoria %}"><i class="material-icons">filter_list</i>Filtrar</a></li>
             </ul>
         </div>
     </nav>
