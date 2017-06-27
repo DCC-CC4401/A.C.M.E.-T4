@@ -33,9 +33,6 @@
             <ul id="slide-out" class="side-nav fixed leftside-navigation ps-container ps-active-y">
                 <li>
                     <div class="userView">
-                        {% if logged_user.tipo is 1 %}
-                            <a href="{% url 'editarPerfilAlumno' %}">
-                        {% endif %}
                         {% if logged_user.tipo is 2 or logged_user.tipo is 3 %}
                             <a href="{% url 'editarVendedor' %}">
                         {% endif %}

@@ -562,7 +562,7 @@ def fichaVendedor(request, pkid):
                            "avatarSesion": usuario.avatar,
                            "favorito": favorito, "formasDePago": vendedor.formasDePago,
                            "horarioIni": vendedor.horarioIni,
-                           "horarioFin": vendedor.horarioFin, "vendedores":vendedoresJson})
+                           "horarioFin": vendedor.horarioFin, "vendedores":vendedoresJson, "activo": vendedor.activo})
 
     else:
         # vista de no registrado o otro vendedor
