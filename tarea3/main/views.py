@@ -47,14 +47,7 @@ def index(request):
         if len(users) > 0:
             if users[0].tipo == 2 or users[0].tipo == 3:
                 return fichaVendedor(request, users[0].id)
-            else:
-                send_url = 'http://freegeoip.net/json'
-                r = requests.get(send_url)
-                j = json.loads(r.text)
-                lat = j['latitude']
-                lon = j['longitude']
-                l = Lugar(lat=lat, lng=lon, acurracy=0, usuario=users[0])
-                l.save()
+
     else:
         f_json = []
 
@@ -731,6 +724,8 @@ def formView(request):
         return render(request, 'main/base.html', {})
 
 def logout(request):
+    Lugar.objects.filter(nombre=request.user).delete()
+
     try:
         del request.session['id']
     except:
@@ -764,6 +759,7 @@ def register(request):
     usuarioNuevo = Usuario(django_user=duser, nombre=nombre, email=email, tipo=tipo, contraseña=password, avatar=avatar,
                            formasDePago=formasDePago, horarioIni=horaInicial, horarioFin=horaFinal)
     usuarioNuevo.save()
+
     return loginReq(request)
 
 def productoReq(request):
