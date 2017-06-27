@@ -1,0 +1,13 @@
+{% extends 'main/base.html' %}
+
+<body>
+
+ <form id="fijoDashboard" method="post" action="{% url 'fijoDashboard' %}">{% csrf_token %}
+                    <input value="{{ id }}" name="fijoId" id="fijoId" type="text" style="display:none;">
+ </form>
+
+{% block content %}
+{% endblock %}
+
+</body>
+

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/css/materialize.min.css">
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <link rel="stylesheet" href="../static/style.css">
+
+    <!--Import jQuery before materialize.js-->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="../static/fb.js"></script>
+
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/js/materialize.min.js"></script>
+    <script src="http://materializecss.com/templates/starter-template/js/init.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.min.js"></script>
+
+    <nav class="top-nav">
+        <div class="nav-wrapper teal lighten-1">
+            <a href="#" class="brand-logo right"><img style="max-height:
+          65px!important;  padding: 8px 0!important;" class="circle"
+                                                      src="../static/img/logo.png"></a>
+            <div class="navbar-fixed">
+                <a href="#" data-activates="slide-out"
+                   class="left button-collapse btn-floating btn-large waves-effect waves-light"><i
+                        class="material-icons">menu</i></a>
+                <a class="center page-title"></a>
+            </div>
+            <ul id="slide-out" class="side-nav fixed leftside-navigation ps-container ps-active-y">
+                <li>
+                    <div class="userView">
+                        {% if logged_user.tipo is 2 or logged_user.tipo is 3 %}
+                            <a href="{% url 'editarVendedor' %}">
+                        {% endif %}
+
+                        <i class="material-icons right grey-text text-lighten-2"
+                           style="position: absolute; bottom: -0.5em; right: 0.5em; padding: 0 0 !important;">settings</i>
+                        </a>
+                        <div class="background" style="height:175px;">
+                            <img src="../static/img/background4.png">
+                        </div>
+                        {% if logged_user.tipo is 1 %}
+                            <!-- pagina perfil de usuario
+                            <a href="#!user"> -->
+
+                        {% endif %}
+                        {% if logged_user.tipo is 2 or logged_user.tipo is 3 %}
+                            <a href="/fichaVendedor/{{ logged_user.id }}">
+                        {% endif %}
+                        {% if logged_auth %}
+                            <!-- avatar -->
+                            <img style="margin-top: 16%;" class="circle" src="../static/media/{{ logged_avatar }}"></a>
+
+                        {% else %}
+                            <img style="margin-top: 16%;" class="circle" src="../static/img/AvatarPenguin.png"></a>
+
+                        {% endif %}
+                        {% if logged_user.tipo is 1 %}
+                            {#                            <a href="#!name">#}
+                        {% endif %}
+                        {% if logged_user.tipo is 2 or  logged_user.tipo is 3 %}
+                            <a href="/fichaVendedor/{{ logged_user.id }}">
+                        {% endif %}
+                        {% if logged_auth %}
+                            <span style="margin-left: 5%;"
+                                  class="white-text name">{{ logged_name }}</span></a>
+
+                        {% else %}
+                            <span style="margin-left: 5%;" class="white-text name">Invitado</span></a>
+
+                        {% endif %}
+                    </div>
+                </li>
+
+
+                {% if logged_auth %}
+                    {% if logged_user.tipo is 1 %}
+                        <li><a href="{% url 'inicioAlumno' %}"><i class="material-icons">home</i>Inicio</a></li>
+                        <li><a href="#" onmousedown=lanzar()><i class="material-icons">add_alert</i>Alerta policial</a></li>
+                                            <li><a href="{% url 'logout' %}"><i class="material-icons">exit_to_app</i>Cerrar Sesión</a></li>
+
+                        <form class="col s12 m12"  enctype="multipart/form-data" action="{% url 'indexFiltro' %}" method="post">
+                  <select class="browser-default" name="categoria" style="color: black;">
+                      <option name="categoria" value="" disabled selected>Categorias para filtrar</option>
+                      <option name="categoria" value="0">Cerdo</option>
+                      <option name="categoria" value="1">Chino</option>
+                      <option name="categoria" value="2">Completos</option>
+                      <option name="categoria" value="3">Egipcio</option>
+                      <option name="categoria" value="4">Empanadas</option>
+                      <option name="categoria" value="5">Ensalada</option>
+                      <option name="categoria" value="6">Japones</option>
+                      <option name="categoria" value="7">Pan</option>
+                      <option name="categoria" value="8">Papas fritas</option>
+                      <option name="categoria" value="9">Pasta</option>
+                      <option name="categoria" value="10">Pescado</option>
+                      <option name="categoria" value="11">Pollo</option>
+                      <option name="categoria" value="12">Postres</option>
+                      <option name="categoria" value="13">Sushi</option>
+                      <option name="categoria" value="14">Vacuno</option>
+                      <option name="categoria" value="15">Vegano</option>
+                      <option name="categoria" value="16">Vegetariano</option>
+                      <option name="categoria" value="17">Comida rapida</option>
+                      <option name="categoria" value="18">Pizza</option>
+                  </select>
+                    <row class="valign-wrapper"><button type='submit' name='btn_filtrar' class='center-align waves-effect waves-light btn btn-large'>Filtrar
+                    </button></row>
+            </form>
+                    {% elif logged_user.tipo is 2 %} {#fijo#}
+                        <li><a href="{% url 'fichaVendedor' logged_user.id %}"><i class="material-icons">home</i>Inicio</a></li>
+                        <li><a href="{% url 'estadisticasVendedor' %}"><i
+                                class="material-icons">assessment</i>Datos de ventas</a></li>
+                                            <li><a href="{% url 'logout' %}"><i class="material-icons">exit_to_app</i>Cerrar Sesión</a></li>
+
+
+                    {% elif logged_user.tipo is 3 %} {#ambulante#}
+                        <li><a href="{% url 'fichaVendedor' logged_user.id %}"><i class="material-icons">home</i>Inicio</a></li>
+                        <li><a href="{% url 'estadisticasVendedor' %}"><i
+                                class="material-icons">assessment</i>Datos de ventas</a></li>
+                        <li>
+                            <div class="divider"></div>
+                        </li>
+
+                        <li><a class="subheader">Activo</a></li>
+                        <li>
+                            <div class="switch" style="margin-left: 80px;">
+                                <label>
+                                    No<input type="checkbox" id="checkbox-estado"><span class="lever"></span>Si
+                                </label>
+                            </div>
+                        </li>
+                        <li><a href="#" onmousedown=lanzar()><i class="material-icons">add_alert</i>Alerta policial</a></li>
+                    <li><a href="{% url 'logout' %}"><i class="material-icons">exit_to_app</i>Cerrar Sesión</a></li>
+
+                    {% else %}
+                    {% endif %}
+
+                {% else %}
+                    <li>
+                        <div class="divider"></div>
+                    </li>
+                    <li><a href="{% url 'index' %}"><i class="material-icons">home</i>Inicio</a></li>
+                    <li><a href="{% url 'login' %}"><i class="material-icons">account_circle</i>Iniciar Sesión</a></li>
+                                    <form class="col s12 m12"  enctype="multipart/form-data" action="{% url 'indexFiltro' %}" method="post">
+                  <select class="browser-default" name="categoria" style="color: black;">
+                      <option name="categoria" value="" disabled selected>Categorias para filtrar</option>
+                      <option name="categoria" value="0">Cerdo</option>
+                      <option name="categoria" value="1">Chino</option>
+                      <option name="categoria" value="2">Completos</option>
+                      <option name="categoria" value="3">Egipcio</option>
+                      <option name="categoria" value="4">Empanadas</option>
+                      <option name="categoria" value="5">Ensalada</option>
+                      <option name="categoria" value="6">Japones</option>
+                      <option name="categoria" value="7">Pan</option>
+                      <option name="categoria" value="8">Papas fritas</option>
+                      <option name="categoria" value="9">Pasta</option>
+                      <option name="categoria" value="10">Pescado</option>
+                      <option name="categoria" value="11">Pollo</option>
+                      <option name="categoria" value="12">Postres</option>
+                      <option name="categoria" value="13">Sushi</option>
+                      <option name="categoria" value="14">Vacuno</option>
+                      <option name="categoria" value="15">Vegano</option>
+                      <option name="categoria" value="16">Vegetariano</option>
+                      <option name="categoria" value="17">Comida rapida</option>
+                      <option name="categoria" value="18">Pizza</option>
+                  </select>
+                    <row class="valign-wrapper"><button type='submit' name='btn_filtrar' class='center-align waves-effect waves-light btn btn-large'>Filtrar
+                    </button></row>
+            </form>
+
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+<script>
+    function handleChange(checkbox) {
+        console.log("minimal handlechange")
+    if(checkbox.checked == true){
+         var datos ="id=" + "{{id}}"+"&estado=true";
+         $.ajax({
+           url:{% url 'cambiarEstado' %},
+           type: "GET",
+           data: datos,
+           dataType: "json",
+
+           success: function(data) {
+           },
+           error:function(data) {
+               alert("error in getting from server")
+           },
+        });
+    }else{
+        var datos ="id=" + "{{id}}"+"&estado=false";
+
+         $.ajax({
+           url:{% url 'cambiarEstado' %},
+           type: "GET",
+           data: datos,
+           dataType: "json",
+
+           success: function(data) {
+           },
+           error:function(data) {
+               alert("error in getting from server")
+           },
+        });
+   }
+}
+</script>
+
+</head>
+
+<body>
+
+{% block content %}
+{% endblock %}
+</body>
+<script>
+    function EstadoActual() {
+        var estdoInicial = "{{ logged_seller_isActive }}";
+        if (estdoInicial == "True") {
+            document.getElementById("checkbox-estado").checked = true;
+        } else {
+            document.getElementById("checkbox-estado").checked = false;
+        }
+    }
+</script>
+
+<script>
+    function switchActivo(){
+        var input = document.getElementById("checkbox-estado");
+        input.setAttribute("onChange" ,'handleChange(this);');
+        if ("{{logged_seller_isActive}}" == "True") {
+            input.setAttribute("checked", true);
+        } else {
+            input.setAttribute("checked", false);
+        }
+    }
+</script>
+
+<script>
+var myVar = setInterval(function(){ Alert() }, 1500);
+
+function Alert() {
+      var user = {{ logged_user.tipo }};
+      var resp = false;
+      if(user == 3){
+          var datos ="id=" + "{{id}}"+"&alert=true";
+          $.ajax({
+            url:{% url 'notificarCambio' %},
+            type: "GET",
+            data: datos,
+            dataType: "json",
+
+            success: function(data) {
+                resp = data.alert;
+                if(resp == true){
+                   alert('Carabineros cerca! CUIDADO');
+                   var datos ="id=" + "{{id}}"+"&alert=false";
+                   $.ajax({
+                      url:{% url 'cambiarAlert' %},
+                      type: "GET",
+                      data: datos,
+                      dataType: "json",
+
+                      success: function(data) {
+                      },
+                   });
+                }
+            },
+          });
+      }
+}
+
+</script>
+
+<script>
+
+function lanzar() {
+  var datos ="id=" + "{{id}}"+"&alert=true";
+  $.ajax({
+     url:{% url 'alerta' %},
+     type: "GET",
+     data: datos,
+     dataType: "json",
+
+     success: function(data) {
+     },
+  });
+}
+
+</script>
+
+
+<script>
+   window.onload = EstadoActual();
+   window.onload = switchActivo();
+</script>
+</html>
