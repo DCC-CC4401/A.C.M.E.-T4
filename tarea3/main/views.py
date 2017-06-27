@@ -1340,8 +1340,10 @@ def map(request):
             lugares.append(lugar)
     return render(request, 'main/index2.html', {'lugares': lugares})
 
+@csrf_exempt
 def indexFiltro(request):
     vendedoresJson = sellerList(request, 0)
+    categoria = request.POST.get("categoria")
 
     if request.user.is_authenticated():
         users = Usuario.objects.filter(django_user=request.user)
@@ -1356,7 +1358,6 @@ def indexFiltro(request):
         f_json = []
 
     c = Comida.objects.filter().values_list('nombre', 'categorias', 'stock', 'idVendedor')
-    c1 = c[0]
 
     lugares = Lugar.objects.filter().values_list('lat', 'lng', 'acurracy', 'usuario')
     lugares_json = json.dumps(list(lugares), cls=DjangoJSONEncoder)

@@ -121,12 +121,9 @@
                     <li><a href="{% url 'login' %}"><i class="material-icons">account_circle</i>Iniciar Sesión</a></li>
 
                 {% endif %}
-                        <div class = "row">
-                  <div>
-                      Selecciona una categoria:
-                  </div>
-                  <select class="browser-default" name="categoria">
-                      <option name="categoria" value="" disabled selected>Categorias</option>
+                <form class="col s12 m12"  enctype="multipart/form-data" action="{% url 'indexFiltro' %}" method="post">
+                  <select class="browser-default" name="categoria" style="color: black;">
+                      <option name="categoria" value="" disabled selected>Categorias para filtrar</option>
                       <option name="categoria" value="0">Cerdo</option>
                       <option name="categoria" value="1">Chino</option>
                       <option name="categoria" value="2">Completos</option>
@@ -147,8 +144,9 @@
                       <option name="categoria" value="17">Comida rapida</option>
                       <option name="categoria" value="18">Pizza</option>
                   </select>
-              </div>
-                <li><a href="{% url 'indexFiltro' %}"><i class="material-icons">filter_list</i>Filtrar</a></li>
+                    <row class="valign-wrapper"><button type='submit' name='btn_filtrar' class='center-align waves-effect waves-light btn btn-large'>Filtrar
+                    </button></row>
+            </form>
             </ul>
         </div>
     </nav>
