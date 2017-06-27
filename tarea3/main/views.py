@@ -54,7 +54,6 @@ def index(request):
     v = Usuario.objects.filter(Q(tipo=2) | Q(tipo=3)).values_list('nombre')
     v_json = json.dumps(list(v), cls=DjangoJSONEncoder)
 
-    c = Comida.objects.raw('SELECT *')
     return render(request, 'main/index.html',
                   {"vendedores": vendedoresJson, "lugares": lugares_json,
                    "vendedoresNombres": v_json, "favoritos": f_json})
@@ -1340,3 +1339,32 @@ def map(request):
         if(lugar.usuario.activo):
             lugares.append(lugar)
     return render(request, 'main/index2.html', {'lugares': lugares})
+
+def indexFiltro(request):
+    vendedoresJson = sellerList(request, 0)
+
+    if request.user.is_authenticated():
+        users = Usuario.objects.filter(django_user=request.user)
+
+        f = Favoritos.objects.filter(idAlumno=users[0].id).values_list('idVendedor')
+        f_json = json.dumps(list(f), cls=DjangoJSONEncoder)
+
+        if len(users) > 0:
+            if users[0].tipo == 2 or users[0].tipo == 3:
+                return fichaVendedor(request, users[0].id)
+    else:
+        f_json = []
+
+    c = Comida.objects.filter().values_list('nombre', 'categorias', 'stock', 'idVendedor')
+    c1 = c[0]
+
+    lugares = Lugar.objects.filter().values_list('lat', 'lng', 'acurracy', 'usuario')
+    lugares_json = json.dumps(list(lugares), cls=DjangoJSONEncoder)
+
+    v = Usuario.objects.filter(Q(tipo=2) | Q(tipo=3)).values_list('nombre')
+    v_json = json.dumps(list(v), cls=DjangoJSONEncoder)
+
+
+    return render(request, 'main/index.html',
+                  {"vendedores": vendedoresJson, "lugares": lugares_json,
+                   "vendedoresNombres": v_json, "favoritos": f_json})
