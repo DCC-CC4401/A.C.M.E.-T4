@@ -80,48 +80,13 @@
                 </li>
 
 
-
-
                 {% if logged_auth %}
                     {% if logged_user.tipo is 1 %}
                         <li><a href="{% url 'inicioAlumno' %}"><i class="material-icons">home</i>Inicio</a></li>
                         <li><a href="#" onmousedown=lanzar()><i class="material-icons">add_alert</i>Alerta policial</a></li>
-                    {% elif logged_user.tipo is 2 %} {#fijo#}
-                        <li><a href="{% url 'fichaVendedor' logged_user.id %}"><i class="material-icons">home</i>Inicio</a></li>
-                        <li><a href="{% url 'estadisticasVendedor' %}"><i
-                                class="material-icons">assessment</i>Datos de ventas</a></li>
+                                            <li><a href="{% url 'logout' %}"><i class="material-icons">exit_to_app</i>Cerrar Sesión</a></li>
 
-                    {% elif logged_user.tipo is 3 %} {#ambulante#}
-                        <li><a href="{% url 'fichaVendedor' logged_user.id %}"><i class="material-icons">home</i>Inicio</a></li>
-                        <li><a href="{% url 'estadisticasVendedor' %}"><i
-                                class="material-icons">assessment</i>Datos de ventas</a></li>
-                        <li>
-                            <div class="divider"></div>
-                        </li>
-
-                        <li><a class="subheader">Activo</a></li>
-                        <li>
-                            <div class="switch" style="margin-left: 80px;">
-                                <label>
-                                    No<input type="checkbox" id="checkbox-estado"><span class="lever"></span>Si
-                                </label>
-                            </div>
-                        </li>
-                        <li><a href="#" onmousedown=lanzar()><i class="material-icons">add_alert</i>Alerta policial</a></li>
-
-                    {% else %}
-                    {% endif %}
-                    <li><a href="{% url 'logout' %}"><i class="material-icons">exit_to_app</i>Cerrar Sesión</a></li>
-
-                {% else %}
-                    <li>
-                        <div class="divider"></div>
-                    </li>
-                    <li><a href="{% url 'index' %}"><i class="material-icons">home</i>Inicio</a></li>
-                    <li><a href="{% url 'login' %}"><i class="material-icons">account_circle</i>Iniciar Sesión</a></li>
-
-                {% endif %}
-                <form class="col s12 m12"  enctype="multipart/form-data" action="{% url 'indexFiltro' %}" method="post">
+                        <form class="col s12 m12"  enctype="multipart/form-data" action="{% url 'indexFiltro' %}" method="post">
                   <select class="browser-default" name="categoria" style="color: black;">
                       <option name="categoria" value="" disabled selected>Categorias para filtrar</option>
                       <option name="categoria" value="0">Cerdo</option>
@@ -147,6 +112,69 @@
                     <row class="valign-wrapper"><button type='submit' name='btn_filtrar' class='center-align waves-effect waves-light btn btn-large'>Filtrar
                     </button></row>
             </form>
+                    {% elif logged_user.tipo is 2 %} {#fijo#}
+                        <li><a href="{% url 'fichaVendedor' logged_user.id %}"><i class="material-icons">home</i>Inicio</a></li>
+                        <li><a href="{% url 'estadisticasVendedor' %}"><i
+                                class="material-icons">assessment</i>Datos de ventas</a></li>
+                                            <li><a href="{% url 'logout' %}"><i class="material-icons">exit_to_app</i>Cerrar Sesión</a></li>
+
+
+                    {% elif logged_user.tipo is 3 %} {#ambulante#}
+                        <li><a href="{% url 'fichaVendedor' logged_user.id %}"><i class="material-icons">home</i>Inicio</a></li>
+                        <li><a href="{% url 'estadisticasVendedor' %}"><i
+                                class="material-icons">assessment</i>Datos de ventas</a></li>
+                        <li>
+                            <div class="divider"></div>
+                        </li>
+
+                        <li><a class="subheader">Activo</a></li>
+                        <li>
+                            <div class="switch" style="margin-left: 80px;">
+                                <label>
+                                    No<input type="checkbox" id="checkbox-estado"><span class="lever"></span>Si
+                                </label>
+                            </div>
+                        </li>
+                        <li><a href="#" onmousedown=lanzar()><i class="material-icons">add_alert</i>Alerta policial</a></li>
+                    <li><a href="{% url 'logout' %}"><i class="material-icons">exit_to_app</i>Cerrar Sesión</a></li>
+
+                    {% else %}
+                    {% endif %}
+
+                {% else %}
+                    <li>
+                        <div class="divider"></div>
+                    </li>
+                    <li><a href="{% url 'index' %}"><i class="material-icons">home</i>Inicio</a></li>
+                    <li><a href="{% url 'login' %}"><i class="material-icons">account_circle</i>Iniciar Sesión</a></li>
+                                    <form class="col s12 m12"  enctype="multipart/form-data" action="{% url 'indexFiltro' %}" method="post">
+                  <select class="browser-default" name="categoria" style="color: black;">
+                      <option name="categoria" value="" disabled selected>Categorias para filtrar</option>
+                      <option name="categoria" value="0">Cerdo</option>
+                      <option name="categoria" value="1">Chino</option>
+                      <option name="categoria" value="2">Completos</option>
+                      <option name="categoria" value="3">Egipcio</option>
+                      <option name="categoria" value="4">Empanadas</option>
+                      <option name="categoria" value="5">Ensalada</option>
+                      <option name="categoria" value="6">Japones</option>
+                      <option name="categoria" value="7">Pan</option>
+                      <option name="categoria" value="8">Papas fritas</option>
+                      <option name="categoria" value="9">Pasta</option>
+                      <option name="categoria" value="10">Pescado</option>
+                      <option name="categoria" value="11">Pollo</option>
+                      <option name="categoria" value="12">Postres</option>
+                      <option name="categoria" value="13">Sushi</option>
+                      <option name="categoria" value="14">Vacuno</option>
+                      <option name="categoria" value="15">Vegano</option>
+                      <option name="categoria" value="16">Vegetariano</option>
+                      <option name="categoria" value="17">Comida rapida</option>
+                      <option name="categoria" value="18">Pizza</option>
+                  </select>
+                    <row class="valign-wrapper"><button type='submit' name='btn_filtrar' class='center-align waves-effect waves-light btn btn-large'>Filtrar
+                    </button></row>
+            </form>
+
+                {% endif %}
             </ul>
         </div>
     </nav>

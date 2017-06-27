@@ -995,6 +995,7 @@ def cambiarEstado(request):
                 lng = float(request.GET.get('lng'))
                 l = Lugar(lat=lat, lng=lng, usuario=vendedor, acurracy=0)
                 l.save()
+
                 Usuario.objects.filter(id=id_vendedor).update(activo=True)
             else:
                 Lugar.objects.filter(usuario=vendedor).delete()
