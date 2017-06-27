@@ -1357,9 +1357,14 @@ def indexFiltro(request):
     else:
         f_json = []
 
-    c = Comida.objects.filter().values_list('nombre', 'categorias', 'stock', 'idVendedor')
+    b = Comida.objects.filter().values_list('nombre', 'categorias', 'stock', 'idVendedor')
+    vendedoresFiltrados = []
+    for comida in b:
+        if comida[1][0] == categoria:
+            if comida[2] != 0:
+                vendedoresFiltrados.append(comida[3])
 
-    lugares = Lugar.objects.filter().values_list('lat', 'lng', 'acurracy', 'usuario')
+    lugares = Lugar.objects.filter(usuario__in=vendedoresFiltrados).values_list('lat', 'lng', 'acurracy', 'usuario')
     lugares_json = json.dumps(list(lugares), cls=DjangoJSONEncoder)
 
     v = Usuario.objects.filter(Q(tipo=2) | Q(tipo=3)).values_list('nombre')

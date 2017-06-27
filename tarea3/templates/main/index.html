@@ -41,9 +41,9 @@
             var arrayLength = lugares.length;
 
             for (var i = 0; i < arrayLength; i++) {
-                var pos2 = lugares[i];
-                var imageUrl = "https://userscontent2.emaze.com/images/b6b36505-1a68-4b82-ae15-93ca6f8bc03f/fb765b8752d50de50cfa15203f9a7acd.png";
-
+                var lugar = lugares[i];
+                var imageUrl = "https://cdn0.iconfinder.com/data/icons/kameleon-free-pack-rounded/110/Food-Dome-512.png";
+                var size = new google.maps.Size(40, 40);
                 var fav = false;
                 var length = favoritos.length;
                 for(var j = 0; j < length; j++) {
@@ -54,15 +54,16 @@
                 }
 
                 if(fav) {
-                    var imageUrl = "http://orig13.deviantart.net/c68b/f/2015/031/8/7/gamecube_logo_by_mac_does_art-d8g76n3.png";
+                    var imageUrl = "https://lh3.googleusercontent.com/NAMrrf3Go4pA4VfETmWDlMoO_R1MtHSiiZkXepaCLaEibQNeghbNgSRlG75cJGs1bM0BktMjx5obcm0=w1089-h633";
+                    var size = new google.maps.Size(50, 50);
                 }
 
                 var markerImage = {
                     url: imageUrl,
-                    scaledSize: new google.maps.Size(50, 50),
+                    scaledSize: size,
                 };
 
-                var myLatLng = {lat: pos2[0], lng: pos2[1]};
+                var myLatLng = {lat: lugar[0], lng: lugar[1]};
                 var marker = new google.maps.Marker({
                     position: myLatLng,
                     map: map,
@@ -89,7 +90,7 @@
             var image = {
                 url: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Rebel_Alliance_logo.svg/220px-Rebel_Alliance_logo.svg.png",
                 // This marker is 20 pixels wide by 32 pixels high.
-                scaledSize: new google.maps.Size(50, 50),
+                scaledSize: new google.maps.Size(0, 0),
               };
 
 
