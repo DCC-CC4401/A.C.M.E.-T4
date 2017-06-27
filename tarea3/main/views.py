@@ -1,12 +1,14 @@
 import datetime
 
 import math
+
+from django.core.serializers.json import DjangoJSONEncoder
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 
 import json
-from django.core.serializers.json import DjangoJSONEncoder
+import requests
 from django.utils import timezone
 from .forms import LoginForm
 from .forms import GestionProductosForm
@@ -45,6 +47,14 @@ def index(request):
         if len(users) > 0:
             if users[0].tipo == 2 or users[0].tipo == 3:
                 return fichaVendedor(request, users[0].id)
+            else:
+                send_url = 'http://freegeoip.net/json'
+                r = requests.get(send_url)
+                j = json.loads(r.text)
+                lat = j['latitude']
+                lon = j['longitude']
+                l = Lugar(lat=lat, lng=lon, acurracy=0, usuario=users[0])
+                l.save()
     else:
         f_json = []
 
@@ -110,6 +120,8 @@ def tiempo(p):
                     estado = "activo"
             else:
                 estado = "inactivo"
+
+
     return estado
 
 def sellerList(request,int):
