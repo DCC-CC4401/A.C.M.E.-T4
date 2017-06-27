@@ -42,6 +42,7 @@
 
             for (var i = 0; i < arrayLength; i++) {
                 var lugar = lugares[i];
+                var vendedor = vendedores.indexOf(lugar[3]);
                 var imageUrl = "https://cdn0.iconfinder.com/data/icons/kameleon-free-pack-rounded/110/Food-Dome-512.png";
                 var size = new google.maps.Size(40, 40);
                 var fav = false;
@@ -67,17 +68,17 @@
                 var marker = new google.maps.Marker({
                     position: myLatLng,
                     map: map,
-                    title: nombres[i].toString(),
+                    title: nombres[vendedor].toString(),
                     icon: markerImage
                 });
 
 
-                marker.addListener('click', (function(i) {
+                marker.addListener('click', (function(vendedor) {
                     return function(){
                         var url = "{% url 'fichaVendedor' id %}";
-                        location.href = url + vendedores[i];
+                        location.href = url + vendedores[vendedor];
                     }
-                })(i));
+                })(vendedor));
             }
 
             var pos = {
