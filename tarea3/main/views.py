@@ -52,6 +52,8 @@ def index(request):
     v = Usuario.objects.filter(Q(tipo=2) | Q(tipo=3)).values_list('nombre')
     v_json = json.dumps(list(v), cls=DjangoJSONEncoder)
 
+    c = Comida.objects.raw('SELECT *')
+
     return render(request, 'main/index.html',
                   {"vendedores": vendedoresJson, "lugares": lugares_json,
                    "vendedoresNombres": v_json, "favoritos": f_json})
@@ -109,7 +111,6 @@ def sellerList(request, int):
         return vendedoresJson
     else:
         return vendAmb
-
 
 def estadisticasRango(request):
     if request.user.is_authenticated():
@@ -257,7 +258,6 @@ def estadisticasRango(request):
                            "productosPrecio": productosPrecioArr, "Titulo": "Ventas por Rango","desde": desde, "hasta":hasta})
 
     return redirect('index')  # cae aqui si usuario no esta auntentificado o si no es vendedor
-
 
 def estadisticasVendedor(request):
     if request.user.is_authenticated():
@@ -744,12 +744,9 @@ def register(request):
     return loginReq(request)
 
 def productoReq(request):
-    horarioIni = 0
-    horarioFin = 0
-    avatar = ""
     if request.method == "POST":
         if request.session.has_key('id'):
-            id = request.session['id']
+            id = request.user.id
             email = request.session['email']
             tipo = request.session['tipo']
             if tipo == 3:
@@ -1364,13 +1361,3 @@ def map(request):
         if(lugar.usuario.activo):
             lugares.append(lugar)
     return render(request, 'main/index2.html', {'lugares': lugares})
-
-def vendedores(request):
-    v = []
-
-    # lista de vendedores
-    for p in Usuario.objects.raw('SELECT * FROM usuario'):
-        if p.tipo == 2 or p.tipo == 3:
-            v.append(p)
-
-    return v

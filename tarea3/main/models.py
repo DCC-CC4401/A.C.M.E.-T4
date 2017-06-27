@@ -14,7 +14,7 @@ class Usuario(models.Model):
     email = models.CharField(max_length=200)
     tipos = ((0, 'admin'), (1, 'alumno'), (2, 'fijo'), (3, 'ambulante'))
     tipo = models.IntegerField(choices=tipos)
-    avatar = models.ImageField(upload_to = 'avatars')
+    avatar = models.ImageField(upload_to='avatars')
     contraseña = models.CharField(max_length=200)
     activo = models.BooleanField(default=False, blank=True)
     litaFormasDePago = (
@@ -73,7 +73,6 @@ class Comida(models.Model):
     class Meta:
         db_table = 'Comida'
 
-
 class Favoritos(models.Model):
     id = models.AutoField(primary_key=True)
     idAlumno = models.IntegerField()
@@ -84,7 +83,6 @@ class Favoritos(models.Model):
 
     class Meta:
         db_table = 'Favoritos'
-
 
 class Imagen(models.Model):
     id = models.AutoField(primary_key=True)
