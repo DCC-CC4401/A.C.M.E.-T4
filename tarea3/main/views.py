@@ -57,7 +57,6 @@ def tiempo(p):
     minutos = tiempo[3:5]
     estado = ""
     if horaf >= horai: # caso 12 - 16
-        #if horaf == horai and minf >= mini: # 12.30 - 12.40
         if horaf >= hora and hora >= horai:
             if horai == hora:
                 if minf >= minutos and minutos >= mini:
@@ -74,24 +73,21 @@ def tiempo(p):
         else:
             estado = "inactivo"
     else: # caso 23:00 - 5:00
-        if hora <= '23' and horaf <= hora:
-            if horaf <= hora and hora <= horai:
-                if horai == hora:
-                    if minf >= minutos and minutos >= mini:
-                        estado = "activo"
-                    else:
-                        estado = "inactivo"
-                elif horaf == hora:
-                    if minf >= minutos and minutos >= mini:
-                        estado = "activo"
-                    else:
-                        estado = "inactivo"
-                else:
+        if horaf <= hora and horai <= hora:
+            if horai == hora:
+                if minf >= minutos and minutos >= mini:
                     estado = "activo"
+                else:
+                    estado = "inactivo"
+            elif horaf == hora:
+                if minf >= minutos and minutos >= mini:
+                    estado = "activo"
+                else:
+                    estado = "inactivo"
             else:
-                estado = "inactivo"
+                estado = "activo"
         else:
-            if '00' <= hora and hora <= horai:
+            if '00' <= hora and hora <= horaf:
                 if horai == hora:
                     if minutos >= mini:
                         estado = "activo"
@@ -886,14 +882,6 @@ def notificarCambio(request):
                 return JsonResponse(data)
     data = {"alert": False}
     return JsonResponse(data)
-
-# def alerta2(request):
-#     amb = sellerList(request,1)
-#     for i in range(len(amb)):
-#         user = Usuario.objects.filter(id=amb[i])
-#         user.update(alert=True)
-#         print("lanzando alerta a " + user[0].nombre)
-#     return redirect('index')
 
 def dist(x1,y1,x2,y2):
     radT = 6378.0
