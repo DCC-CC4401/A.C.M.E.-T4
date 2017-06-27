@@ -599,32 +599,35 @@ def productoReq(request):
     horarioFin = 0
     avatar = ""
     if request.method == "POST":
-        if request.session.has_key('id'):
-            id = request.session['id']
-            email = request.session['email']
-            tipo = request.session['tipo']
-            if tipo == 3:
-                path = "main/baseVAmbulante.html"
-                url = "main/vendedor-ambulante.html"
-            if tipo == 2:
-                path = "main/baseVFijo.html"
-                url = "main/vendedor-fijo.html"
-            Formulario = GestionProductosForm(request.POST)
-            if Formulario.is_valid():
-                producto = Comida()
-                producto.idVendedor = id
-                producto.nombre = request.POST.get("nombre")
-                producto.imagen = request.FILES.get("comida")
-                producto.precio = request.POST.get("precio")
-                producto.stock = request.POST.get("stock")
-                producto.descripcion = request.POST.get("descripcion")
-                producto.categorias = request.POST.get("categoria")
-                producto.save()
-            else:
-                return render(request, 'main/agregar-productos.html',
+        #if request.session.has_key('id'):
+        #id = request.session['id']
+        user = Usuario.objects.get(django_user=request.user)
+        #email = request.session['email']
+        #tipo = request.session['tipo']
+        email = user.email
+        tipo = user.tipo
+        if tipo == 3:
+            path = "main/baseVAmbulante.html"
+            url = "main/vendedor-ambulante.html"
+        if tipo == 2:
+            path = "main/baseVFijo.html"
+            url = "main/vendedor-fijo.html"
+        Formulario = GestionProductosForm(request.POST)
+        if Formulario.is_valid():
+            producto = Comida()
+            producto.idVendedor = user.id
+            producto.nombre = request.POST.get("nombre")
+            producto.imagen = request.FILES.get("comida")
+            producto.precio = request.POST.get("precio")
+            producto.stock = request.POST.get("stock")
+            producto.descripcion = request.POST.get("descripcion")
+            producto.categorias = request.POST.get("categoria")
+            producto.save()
+        else:
+            return render(request, 'main/agregar-productos.html',
                               {"path": path, "respuesta": "¡Ingrese todos los datos!"})
 
-        return redirect('fichaVendedor', str(id))
+        return redirect('fichaVendedor', str(user.id))
 
 @csrf_exempt
 def editarVendedor(request):
